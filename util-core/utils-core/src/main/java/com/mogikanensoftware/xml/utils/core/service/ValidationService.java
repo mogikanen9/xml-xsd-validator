@@ -2,7 +2,9 @@ package com.mogikanensoftware.xml.utils.core.service;
 
 import java.io.File;
 
+import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
+
 public interface ValidationService {
 
-	void validate(File xmlFileToValidate, File xsdFile) throws ValidationServiceException; 
+	ValidationResult validate(File xmlFileToValidate, File xsdFile) throws ValidationServiceException; 
 }
