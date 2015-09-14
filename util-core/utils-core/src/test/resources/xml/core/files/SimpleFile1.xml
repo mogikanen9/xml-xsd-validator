@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.example.org/SimpleXMLSchema1 ../xsd/SimpleXMLSchema1.xsd " -->
+<tns:person xmlns:tns="http://www.example.org/SimpleXMLSchema1">
+  <tns:name>Vasya Pupkin 23</tns:name>
+  <tns:age>150</tns:age>
+  <tns:address>150 Bloor Street, Toronto, ON, M98 2W3</tns:address>
+</tns:person>
