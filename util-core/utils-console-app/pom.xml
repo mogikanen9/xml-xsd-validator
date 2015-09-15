@@ -1,0 +1,49 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<artifactId>utils-console-app</artifactId>
+	<packaging>jar</packaging>
+	<name>utils-console-app</name>
+	<url>http://maven.apache.org</url>
+
+	<parent>
+		<groupId>com.mogikanensoftware.xml</groupId>
+		<artifactId>utils</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+		<relativePath>../</relativePath>
+	</parent>
+
+
+	<dependencies>
+
+		<!-- utils-core -->
+		<dependency>
+			<groupId>com.mogikanensoftware.xml</groupId>
+			<artifactId>utils-core</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+			<scope>compile</scope>
+		</dependency>
+
+
+	</dependencies>
+	<build>
+		<plugins>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>appassembler-maven-plugin</artifactId>
+				<version>1.10</version>
+				<configuration>
+					<programs>
+						<program>
+							<mainClass>com.mogikanensoftware.xml.utils.console.MainApp</mainClass>
+							<id>utils-console-app</id>
+						</program>
+					</programs>
+				</configuration>
+			</plugin>
+
+		</plugins>
+	</build>
+</project>
