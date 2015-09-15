@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.example.org/SimpleXMLSchema1"
+	xmlns:tns="http://www.example.org/SimpleXMLSchema1" elementFormDefault="qualified">
+
+    <element name="person" type="tns:person"></element>
+
+	<complexType name="person">
+		<sequence>
+			<element name="name">
+			<simpleType>
+					<restriction base="string">
+						<pattern value="[a-zA-Z]"/>
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="age">
+				<simpleType>
+					<restriction base="integer">
+						<minInclusive value="0" />
+						<maxInclusive value="120" />
+					</restriction>
+				</simpleType>
+			</element>
+			<element name="address" type="string"></element>
+		</sequence>
+	</complexType>
+</schema>
