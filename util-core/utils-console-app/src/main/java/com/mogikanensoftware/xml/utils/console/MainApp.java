@@ -1,10 +1,12 @@
 package com.mogikanensoftware.xml.utils.console;
 
 import java.io.File;
+import java.util.Set;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoBean;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
@@ -13,6 +15,12 @@ import com.mogikanensoftware.xml.utils.core.service.impl.BasicValidationServiceI
 public class MainApp {
 
 	private static final Logger logger = LogManager.getLogger(MainApp.class);
+	
+	public static void print(Set<ValidationInfoBean> set){
+		for (ValidationInfoBean validationInfoBean : set) {
+			logger.info(validationInfoBean.getInfoType()+"->"+validationInfoBean.getMessage());
+		}
+	}
 	
 	public static void main(String[] args) {
 		
@@ -41,7 +49,20 @@ public class MainApp {
 				try {
 					ValidationResult rs = validationService.validate(xmlFile, xsdFile);
 					
-					logger.info("rs->"+rs);
+					if(rs.getValidationErrors()!=null && rs.getValidationErrors().size()>0){
+						logger.info("Errors:\n");
+						MainApp.print(rs.getValidationErrors());						
+					}else{
+						logger.info("No errors found.");
+					}
+
+					if(rs.getValidationWarnings()!=null && rs.getValidationWarnings().size()>0){
+						logger.info("Warning:\n");
+						MainApp.print(rs.getValidationErrors());						
+					}else{
+						logger.info("No warning found.");
+					}
+
 					
 				} catch (ValidationServiceException e) {
 					logger.error("Uknown error->"+e.getMessage(), e);
