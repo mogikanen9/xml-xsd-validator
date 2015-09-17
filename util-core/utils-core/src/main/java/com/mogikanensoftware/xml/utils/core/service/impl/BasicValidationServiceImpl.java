@@ -43,9 +43,13 @@ public class BasicValidationServiceImpl implements ValidationService {
 			inXsd = new FileInputStream(xsdFile);
 			inXml = new FileInputStream(xmlFileToValidate);
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
+						
+			
+			factory.setErrorHandler(customErrorHandler);
 			Schema schema = factory.newSchema(new StreamSource(inXsd));
+			
 			Validator validator = schema.newValidator();
-			validator.setErrorHandler(customErrorHandler);
+			//validator.setErrorHandler(customErrorHandler);
 			StreamSource xmlFile = new StreamSource(inXml);
 			validator.validate(xmlFile);
 
