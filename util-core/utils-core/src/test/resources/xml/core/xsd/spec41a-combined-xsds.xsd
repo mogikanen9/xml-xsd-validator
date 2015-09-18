@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- edited with XMLSpy v2007 sp2 (http://www.altova.com) by (OntarioMD) -->
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cdst="cds_dt" targetNamespace="cds_dt" elementFormDefault="qualified">
+<!-- edited with XMLSpy v2006 rel. 3 sp2 (http://www.altova.com) by (OntarioMD) -->
+<!-- HRM-XSD Schema v1.1.2 / EMR 4.1 / Publish Date: August 14, 2013 -->
+<xs:schema xmlns="cds" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:cdsd="cds_dt" targetNamespace="cds" elementFormDefault="qualified" attributeFormDefault="qualified">
+	<xs:import namespace="cds_dt" schemaLocation="report_manager_dt.xsd"/>
 	<xs:complexType name="address">
 		<xs:choice>
 			<xs:element name="Formatted" type="cdst:address.formatted"/>
@@ -13,8 +15,8 @@
 		</xs:attribute>
 	</xs:complexType>
 	<xs:simpleType name="address.structured.line">
-		<xs:restriction base="xs:token">
-			<xs:minLength value="1"/>
+		<xs:restriction base="xs:string">
+			<xs:minLength value="0"/>
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -29,7 +31,7 @@
 			<xs:sequence minOccurs="0">
 				<xs:element name="City">
 					<xs:simpleType>
-						<xs:restriction base="xs:token">
+						<xs:restriction base="xs:string">
 							<xs:maxLength value="80"/>
 						</xs:restriction>
 					</xs:simpleType>
@@ -189,14 +191,14 @@
 		<xs:all>
 			<xs:element name="Number">
 				<xs:simpleType>
-					<xs:restriction base="xs:token">
+					<xs:restriction base="xs:string">
 						<xs:maxLength value="20"/>
 					</xs:restriction>
 				</xs:simpleType>
 			</xs:element>
 			<xs:element name="Version" minOccurs="0">
 				<xs:simpleType>
-					<xs:restriction base="xs:token">
+					<xs:restriction base="xs:string">
 						<xs:maxLength value="2"/>
 					</xs:restriction>
 				</xs:simpleType>
@@ -462,7 +464,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="personNamePart">
-		<xs:restriction base="xs:token">
+		<xs:restriction base="xs:string">
 			<xs:maxLength value="50"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -532,7 +534,7 @@
 			<xs:sequence>
 				<xs:element name="phoneNumber">
 					<xs:simpleType>
-						<xs:restriction base="xs:token">
+						<xs:restriction base="xs:string">
 							<xs:maxLength value="25"/>
 						</xs:restriction>
 					</xs:simpleType>
@@ -567,7 +569,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="postalCode">
-		<xs:restriction base="xs:token">
+		<xs:restriction base="xs:string">
 			<xs:maxLength value="10"/>
 			<xs:pattern value="([a-zA-Z0-9-])*"/>
 		</xs:restriction>
@@ -610,8 +612,7 @@
 		<xs:restriction base="xs:token">
 			<xs:maxLength value="50"/>
 			<xs:enumeration value="Text"/>
-			<xs:enumeration value="Audio File"/>
-			<xs:enumeration value="Image"/>
+			<xs:enumeration value="Binary"/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="auditFormat">
@@ -650,7 +651,7 @@
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:simpleType name="reportSubClass">
-		<xs:restriction base="xs:token">
+		<xs:restriction base="xs:string">
 			<xs:maxLength value="60"/>
 		</xs:restriction>
 	</xs:simpleType>
@@ -773,13 +774,7 @@
 	</xs:simpleType>
 	<xs:simpleType name="blank">
 		<xs:restriction base="xs:token">
-		<xs:enumeration value=""/> 
-<!--		
-*** Richard Orellana Commented out the following line 
-*** because it breaks the XML validation.
-*** It has been replaced by a corrected version (without space)
-		<xs:enumeration value=" "/>
--->
+			<xs:enumeration value=""/>
 		</xs:restriction>
 	</xs:simpleType>
 	<xs:complexType name="ynIndicatorAndBlank">
@@ -969,5 +964,179 @@
 			<xs:element name="SelfMonitoring" type="cdst:ynIndicatorsimple"/>
 			<xs:element name="Date" type="cdst:dateYYYYMMDD"/>
 		</xs:sequence>
-	</xs:complexType>
+	</xs:complexType>	
+	<xs:element name="OmdCds">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="PatientRecord"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="PatientRecord">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="Demographics"/>
+				<xs:element ref="ReportsReceived" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element ref="TransactionInformation" minOccurs="0" maxOccurs="unbounded"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Demographics">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Names" type="cdsd:personNameStandard"/>
+				<xs:element name="DateOfBirth" type="cdsd:dateFullOrPartial"/>
+				<xs:element name="HealthCard" type="cdsd:healthCard" minOccurs="0"/>
+				<xs:element name="ChartNumber" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:token">
+							<xs:maxLength value="15"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Gender" type="cdsd:gender"/>
+				<xs:element name="UniqueVendorIdSequence" type="cdsd:vendorId"/>
+				<xs:element name="Address" type="cdsd:address" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PhoneNumber" type="cdsd:phoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+				<xs:element name="PreferredPhone" type="cdsd:phoneNumberType" minOccurs="0"/>
+				<xs:element name="PreferredOfficialLanguage" type="cdsd:officialSpokenLanguageCode" minOccurs="0"/>
+				<xs:element name="PreferredSpokenLanguage" type="cdsd:spokenLanguageCode" minOccurs="0"/>
+				<xs:element name="Contact" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="Name" type="cdsd:personNameSimpleWithMiddleName"/>
+							<xs:element name="PhoneNumber" type="cdsd:phoneNumber" minOccurs="0" maxOccurs="unbounded"/>
+							<xs:element name="EmailAddress" type="cdsd:emailAddress" minOccurs="0"/>
+							<xs:element name="Note" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="cdsd:text">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+						</xs:sequence>
+						<xs:attribute name="ContactPurpose" type="cdsd:contactPersonPurpose" use="required"/>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="NoteAboutPatient" type="cdsd:text64K" minOccurs="0"/>
+				<xs:element name="PatientWarningFlags" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="cdsd:patientWarningFlag"/>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="EnrollmentStatus" type="cdsd:enrollmentStatus" minOccurs="0"/>
+				<xs:element name="EnrollmentDate" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="EnrollmentTerminationDate" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="TerminationReason" type="cdsd:terminationReasonCode" minOccurs="0"/>
+				<xs:element name="PrimaryPhysician" minOccurs="0">
+					<xs:complexType>
+						<xs:all>
+							<xs:element name="Name" type="cdsd:personNameSimple" minOccurs="0"/>
+							<xs:element name="OHIPPhysicianId" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="cdsd:ohipPhysicianBillingNumber"/>
+								</xs:simpleType>
+							</xs:element>
+						</xs:all>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="Email" type="cdsd:emailAddress" minOccurs="0"/>
+				<xs:element name="FamilyMemberLink" type="cdsd:vendorId" minOccurs="0"/>
+				<xs:element name="PersonStatusCode" type="cdsd:personStatus"/>
+				<xs:element name="PersonStatusDate" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="SIN" type="cdsd:socialInsuranceNumber" minOccurs="0"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="ReportsReceived">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="Media" type="cdsd:reportMedia" minOccurs="0"/>
+				<xs:element name="Format" type="cdsd:reportFormat" minOccurs="0"/>
+				<xs:element name="FileExtensionAndVersion" type="cdsd:reportFileTypeAndVersion"/>
+				<xs:element name="Content" type="cdsd:reportContent" minOccurs="0"/>
+				<xs:element name="Class" type="cdsd:reportClass" minOccurs="0"/>
+				<xs:element name="SubClass" type="cdsd:reportSubClass" minOccurs="0"/>
+				<xs:element name="EventDateTime" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="ReceivedDateTime" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="ReviewedDateTime" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+				<xs:element name="AuthorPhysician" type="cdsd:personNameSimple" minOccurs="0"/>
+				<xs:element name="ReviewingOHIPPhysicianId" type="cdsd:ohipPhysicianBillingNumber" minOccurs="0"/>
+				<xs:element name="SendingFacility" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:token">
+							<xs:maxLength value="4"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="SendingFacilityReportNumber" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="cdsd:text">
+							<xs:maxLength value="75"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="OBRContent" minOccurs="0" maxOccurs="unbounded">
+					<xs:complexType>
+						<xs:sequence>
+							<xs:element name="AccompanyingSubClass" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="cdsd:text">
+										<xs:maxLength value="60"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="AccompanyingMnemonic" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="cdsd:text">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="AccompanyingDescription" minOccurs="0">
+								<xs:simpleType>
+									<xs:restriction base="cdsd:text">
+										<xs:maxLength value="200"/>
+									</xs:restriction>
+								</xs:simpleType>
+							</xs:element>
+							<xs:element name="ObservationDateTime" type="cdsd:dateFullOrPartial" minOccurs="0"/>
+						</xs:sequence>
+					</xs:complexType>
+				</xs:element>
+				<xs:element name="ResultStatus" minOccurs="0">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:maxLength value="1"/>
+							<xs:enumeration value="P"/>
+							<xs:enumeration value="D"/>
+							<xs:enumeration value="S"/>
+							<xs:enumeration value="C"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="TransactionInformation">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="MessageUniqueID">
+					<xs:simpleType>
+						<xs:restriction base="cdsd:text">
+							<xs:maxLength value="250"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="DeliverToUserID">
+					<xs:simpleType>
+						<xs:restriction base="cdsd:text">
+							<xs:maxLength value="9"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:element>
+				<xs:element name="Provider" type="cdsd:personNameSimple"/>
+			</xs:sequence>
+		</xs:complexType>
+	</xs:element>
 </xs:schema>
