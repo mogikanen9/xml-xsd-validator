@@ -15,64 +15,78 @@ import com.mogikanensoftware.xml.utils.core.service.impl.BasicValidationServiceI
 public class MainApp {
 
 	private static final Logger logger = LogManager.getLogger(MainApp.class);
-	
-	public static void print(Set<ValidationInfoBean> set){
+
+	public static void print(Set<ValidationInfoBean> set) {
 		for (ValidationInfoBean validationInfoBean : set) {
-			logger.info(validationInfoBean.getInfoType()+"->"+validationInfoBean.getMessage());
+			logger.info(validationInfoBean.getInfoType() + "->" + validationInfoBean.getMessage());
 		}
 	}
-	
+
 	public static void main(String[] args) {
-		
+
 		logger.info("Starting MainApp...");
 
-		if(args.length!=2 || args[0]==null || args[1]==null || args[0].length()==0 || args[1].length()==0){
-			logger.fatal("Missing mandatory parameters - both xml file path adn xsd file path MUST be specified!");
-		}else{
-		
-			String xmlFileParam = args[0];		
-			String xsdFileParam = args[1];
-			
+		if (args.length < 2 || args[0] == null || args[1] == null || args[0].length() == 0 || args[1].length() == 0) {
+			logger.fatal("Missing mandatory parameters - both xml file path and xsd file path MUST be specified!");
+		} else {
+
+			String xmlFileParam = args[0];			
+
 			File xmlFile = new File(xmlFileParam);
-			File xsdFile = new File(xsdFileParam);
-			
-			if(!xmlFile.exists()){
-				logger.fatal("xmlFile doea not exist ->"+xmlFile.toString());
-			}else if (!xsdFile.exists()){
-				logger.fatal("xsdFile doea not exist ->"+xsdFile.toString());
-			}else{
-			
-				logger.info("About to validate xml file ->"+xmlFile+" agaiinst xsd file -> "+xsdFile);
-				
-				
-				ValidationService validationService = new BasicValidationServiceImpl();
-				try {
-					ValidationResult rs = validationService.validate(xmlFile, xsdFile);
-					
-					if(rs.getValidationErrors()!=null && rs.getValidationErrors().size()>0){
-						logger.info("Errors:\n");
-						MainApp.print(rs.getValidationErrors());						
-					}else{
-						logger.info("No errors found.");
-					}
-
-					if(rs.getValidationWarnings()!=null && rs.getValidationWarnings().size()>0){
-						logger.info("Warning:\n");
-						MainApp.print(rs.getValidationErrors());						
-					}else{
-						logger.info("No warning found.");
-					}
-
-					
-				} catch (ValidationServiceException e) {
-					logger.error("Uknown error->"+e.getMessage(), e);
-				}
+			File[] xsdFiles = new File[args.length - 1];
+			for (int i = 0; i < xsdFiles.length; i++) {
+				xsdFiles[i] = new File(args[i + 1]);
 			}
-						
+
+			if (!xmlFile.exists()) {
+				logger.fatal("xmlFile doea not exist ->" + xmlFile.toString());
+			} else {
+
+				boolean allXsdExist = true;
+				for (File sxdFile : xsdFiles) {
+					if (!sxdFile.exists()) {
+						logger.fatal("sxdFile doea not exist ->" + sxdFile.toString());
+						allXsdExist = false;
+					}
+				}
+
+				if (logger.isDebugEnabled()) {
+					logger.debug("allXsdExist->" + allXsdExist);
+				}
+
+				if (allXsdExist) {
+
+					logger.info("About to validate xml file ->" + xmlFile + " agaiinst "+xsdFiles.length+" xsd file(s)");
+
+					ValidationService validationService = new BasicValidationServiceImpl();
+					try {
+						ValidationResult rs = validationService.validate(xmlFile, xsdFiles);
+
+						if (rs.getValidationErrors() != null && rs.getValidationErrors().size() > 0) {
+							logger.info("Errors:\n");
+							MainApp.print(rs.getValidationErrors());
+						} else {
+							logger.info("No errors found.");
+						}
+
+						if (rs.getValidationWarnings() != null && rs.getValidationWarnings().size() > 0) {
+							logger.info("Warning:\n");
+							MainApp.print(rs.getValidationErrors());
+						} else {
+							logger.info("No warning found.");
+						}
+
+					} catch (ValidationServiceException e) {
+						logger.error("Uknown error->" + e.getMessage(), e);
+					}
+				} else {
+					logger.fatal("XSD cannot bd found.");
+				}
+
+			}
+
 		}
-				
-		
-		
+
 		logger.info("MainApp eneded up.");
 		System.exit(0);
 	}
