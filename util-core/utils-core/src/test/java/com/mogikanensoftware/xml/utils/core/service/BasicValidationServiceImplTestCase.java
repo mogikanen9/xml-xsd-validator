@@ -29,7 +29,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 			File xsdFile = new File(xsdFilePath);
 			File xmlFile = new File(xmlFilePath);
-			ValidationResult result = validationService.validate(xmlFile, xsdFile);
+			ValidationResult result = validationService.validate(xmlFile, new File[]{xsdFile});
 
 			assertNotNull(result);
 			assertNotNull(result.getValidationErrors());
@@ -49,4 +49,42 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	}
 
+	public void testValidate2XSD() {
+		try {
+			ValidationService validationService = new BasicValidationServiceImpl();
+
+			String xsdFilePath1 = BasicValidationServiceImplTestCase.class
+					.getResource("/xml/core/xsd/report_manager.xsd").getFile();
+			String xsdFilePath2 = BasicValidationServiceImplTestCase.class
+					.getResource("/xml/core/xsd/report_manager_dt.xsd").getFile();
+			
+			String xmlFilePath = BasicValidationServiceImplTestCase.class.getResource("/xml/core/files/MR_Final1.xml")
+					.getFile();
+
+			logger.info("xsdFilePath1->" + xsdFilePath1);
+			logger.info("xsdFilePath2->" + xsdFilePath2);
+			logger.info("xmlFilePath->" + xmlFilePath);
+
+			File xsdFile1 = new File(xsdFilePath1);
+			File xsdFile2 = new File(xsdFilePath2);
+			File xmlFile = new File(xmlFilePath);
+			ValidationResult result = validationService.validate(xmlFile, new File[]{xsdFile1,xsdFile2});
+
+			assertNotNull(result);
+			assertNotNull(result.getValidationErrors());
+			assertTrue(result.getValidationErrors().size() > 0);
+			assertTrue(result.getValidationWarnings().size() == 0);
+			
+			logger.info("All validation errors: \n");
+
+			for (ValidationInfoBean info : result.getValidationErrors()) {
+				logger.info(info.toString());
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		logger.info("Done");
+
+	}
 }

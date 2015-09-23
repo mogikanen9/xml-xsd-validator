@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 
 import javax.xml.XMLConstants;
+import javax.xml.transform.Source;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -13,6 +14,8 @@ import javax.xml.validation.Validator;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.w3c.dom.ls.LSInput;
+import org.w3c.dom.ls.LSResourceResolver;
 import org.xml.sax.SAXException;
 
 import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoBean;
@@ -26,29 +29,38 @@ public class BasicValidationServiceImpl implements ValidationService {
 	private static final Logger logger = LogManager.getLogger(BasicValidationServiceImpl.class);
 
 	@Override
-	public ValidationResult validate(File xmlFileToValidate, File xsdFile) throws ValidationServiceException {
+	public ValidationResult validate(File xmlFileToValidate, File[] xsdFiles) throws ValidationServiceException {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("xmlFileToValidate->" + xmlFileToValidate);
-			logger.debug("xsdFile->" + xsdFile);
+			logger.debug("xsdFiles->" + xsdFiles);
 		}
 
-		InputStream inXsd = null;
+		InputStream[] inXsds = new InputStream[xsdFiles.length];
 		InputStream inXml = null;
 
 		CustomSAXErrorHandler customErrorHandler = new CustomSAXErrorHandler();
 		ValidationResult rs = new ValidationResult();
 
 		try {
-			inXsd = new FileInputStream(xsdFile);
+
+			for (int i = 0; i < xsdFiles.length; i++) {
+				inXsds[i] = new FileInputStream(xsdFiles[i]);
+			}
+
+			Source[] schemaSources = new Source[inXsds.length];
+			for (int i = 0; i < inXsds.length; i++) {
+				schemaSources[i] = new StreamSource(inXsds[i]);
+			}
+
 			inXml = new FileInputStream(xmlFileToValidate);
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-						
 			
-			factory.setErrorHandler(customErrorHandler);
-			Schema schema = factory.newSchema(new StreamSource(inXsd));
 			
-			Validator validator = schema.newValidator();
+			//factory.setErrorHandler(customErrorHandler);
+			Schema schema = factory.newSchema(schemaSources);
+
+			Validator validator = schema.newValidator();			
 			//validator.setErrorHandler(customErrorHandler);
 			StreamSource xmlFile = new StreamSource(inXml);
 			validator.validate(xmlFile);
@@ -60,16 +72,15 @@ public class BasicValidationServiceImpl implements ValidationService {
 					logger.debug("customErrorHandler, found ->" + customErrorHandler.getExceptions().size()
 							+ " exceptions/errors");
 				}
-				
-				logger.debug("customErrorHandler.getWarnings() is not null ->"
-						+ (customErrorHandler.getWarnings() != null));
-				if(customErrorHandler.getWarnings()!=null){
-					logger.debug("customErrorHandler, found ->" + customErrorHandler.getWarnings().size()
-							+ " warnings");
+
+				logger.debug(
+						"customErrorHandler.getWarnings() is not null ->" + (customErrorHandler.getWarnings() != null));
+				if (customErrorHandler.getWarnings() != null) {
+					logger.debug(
+							"customErrorHandler, found ->" + customErrorHandler.getWarnings().size() + " warnings");
 				}
 			}
 
-			
 			if (customErrorHandler.getExceptions() != null && customErrorHandler.getExceptions().size() > 0) {
 
 				for (SAXException ex : customErrorHandler.getExceptions()) {
@@ -77,12 +88,12 @@ public class BasicValidationServiceImpl implements ValidationService {
 				}
 			}
 
-			if(customErrorHandler.getWarnings()!=null && customErrorHandler.getWarnings().size() > 0){
+			if (customErrorHandler.getWarnings() != null && customErrorHandler.getWarnings().size() > 0) {
 				for (SAXException ex : customErrorHandler.getWarnings()) {
 					rs.addWarningInfo(new ValidationInfoBean(ValidationInfoType.warning, null, ex.getMessage()));
 				}
 			}
-			
+
 		} catch (SAXException | IOException e) {
 
 			if (e instanceof SAXException) {
@@ -100,11 +111,15 @@ public class BasicValidationServiceImpl implements ValidationService {
 			}
 
 		} finally {
-			if (inXsd != null) {
-				try {
-					inXsd.close();
-				} catch (IOException e) {
-					logger.error(e.getMessage(), e);
+			if (inXsds != null && inXsds.length > 0) {
+
+				for (int i = 0; i < inXsds.length; i++) {
+					try {
+
+						inXsds[i].close();
+					} catch (IOException e) {
+						logger.error(e.getMessage(), e);
+					}
 				}
 			}
 
@@ -117,10 +132,10 @@ public class BasicValidationServiceImpl implements ValidationService {
 			}
 		}
 
-		if(logger.isDebugEnabled()){
-			logger.debug("rs->"+rs);
+		if (logger.isDebugEnabled()) {
+			logger.debug("rs->" + rs);
 		}
-		
+
 		return rs;
 
 	}
