@@ -101,7 +101,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 								ValidationInfoType.error,
 								parsingService.extractErrorType(ex.getMessage()),
 								parsingService.extractElementName(ex.getMessage()), 
-								ex.getMessage()));
+								parsingService.supressActualElementValue(ex.getMessage())));
 				}
 			}
 
@@ -111,7 +111,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 								ValidationInfoType.warning, 
 								parsingService.extractErrorType(ex.getMessage()),
 								parsingService.extractElementName(ex.getMessage()),  
-								ex.getMessage()));
+								parsingService.supressActualElementValue(ex.getMessage())));
 				}
 			}
 
