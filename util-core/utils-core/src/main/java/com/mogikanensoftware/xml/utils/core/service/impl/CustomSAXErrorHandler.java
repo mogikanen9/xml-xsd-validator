@@ -9,10 +9,10 @@ import org.xml.sax.ErrorHandler;
 import org.xml.sax.SAXException;
 import org.xml.sax.SAXParseException;
 
-public class CustomSAXErrorHandler implements ErrorHandler {
+public class CustomSAXErrorHandler implements ErrorHandler {	
 
 	private static final Logger logger = LogManager.getFormatterLogger(CustomSAXErrorHandler.class);
-	
+
 	private List<SAXParseException> exceptions = new ArrayList<SAXParseException>();
 	private List<SAXParseException> warnings = new ArrayList<SAXParseException>();
 
@@ -33,33 +33,33 @@ public class CustomSAXErrorHandler implements ErrorHandler {
 	}
 
 	@Override
-	public void error(SAXParseException arg0) throws SAXException {
-		
-		if(logger.isDebugEnabled()){
-			logger.debug("error-> "+arg0.getMessage());
+	public void error(SAXParseException spe) throws SAXException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("error-> " + spe.getMessage());
 		}
-		
-		exceptions.add(arg0);
+
+		exceptions.add(spe);
 	}
 
 	@Override
-	public void fatalError(SAXParseException arg0) throws SAXException {
-		
-		if(logger.isDebugEnabled()){
-			logger.debug("fatalError-> "+arg0.getMessage());
+	public void fatalError(SAXParseException spe) throws SAXException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("fatalError-> " + spe.getMessage());
 		}
-		
-		exceptions.add(arg0);
+
+		exceptions.add(spe);
 	}
 
 	@Override
-	public void warning(SAXParseException arg0) throws SAXException {
-		
-		if(logger.isDebugEnabled()){
-			logger.debug("warning-> "+arg0.getMessage());
+	public void warning(SAXParseException spe) throws SAXException {
+
+		if (logger.isDebugEnabled()) {
+			logger.debug("warning-> " + spe.getMessage());
 		}
-		
-		warnings.add(arg0);
+
+		warnings.add(spe);
 	}
 
 }
