@@ -61,7 +61,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 			Schema schema = factory.newSchema(schemaSources);
 
 			Validator validator = schema.newValidator();			
-			//validator.setErrorHandler(customErrorHandler);
+			validator.setErrorHandler(customErrorHandler);
 			StreamSource xmlFile = new StreamSource(inXml);
 			validator.validate(xmlFile);
 
