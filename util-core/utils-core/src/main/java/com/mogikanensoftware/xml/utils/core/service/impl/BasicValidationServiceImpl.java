@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URL;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -43,31 +44,20 @@ public class BasicValidationServiceImpl implements ValidationService {
 		this.parsingService = parsingService;
 	}
 
-	@Override
-	public ValidationResult validate(File xmlFileToValidate, File[] xsdFiles) throws ValidationServiceException {
-
+	
+	public ValidationResult validate(File xmlFileToValidate, Source[] schemaSources) throws ValidationServiceException{
 		if (logger.isDebugEnabled()) {
 			logger.debug("xmlFileToValidate->" + xmlFileToValidate);
-			logger.debug("xsdFiles->" + xsdFiles);
+			logger.debug("schemaSources->" + schemaSources);
 		}
-
-		InputStream[] inXsds = new InputStream[xsdFiles.length];
+	
 		InputStream inXml = null;
 
 		CustomSAXErrorHandler customErrorHandler = new CustomSAXErrorHandler();
 		ValidationResult rs = new ValidationResult();
 
 		try {
-
-			for (int i = 0; i < xsdFiles.length; i++) {
-				inXsds[i] = new FileInputStream(xsdFiles[i]);
-			}
-
-			Source[] schemaSources = new Source[inXsds.length];
-			for (int i = 0; i < inXsds.length; i++) {
-				schemaSources[i] = new StreamSource(inXsds[i]);
-			}
-
+			
 			inXml = new FileInputStream(xmlFileToValidate);
 			SchemaFactory factory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
 								
@@ -131,18 +121,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 				throw new ValidationServiceException(e);
 			}
 
-		} finally {
-			if (inXsds != null && inXsds.length > 0) {
-
-				for (int i = 0; i < inXsds.length; i++) {
-					try {
-
-						inXsds[i].close();
-					} catch (IOException e) {
-						logger.error(e.getMessage(), e);
-					}
-				}
-			}
+		} finally {			
 
 			if (inXml != null) {
 				try {
@@ -158,7 +137,56 @@ public class BasicValidationServiceImpl implements ValidationService {
 		}
 
 		return rs;
+	}
+	
+	@Override
+	public ValidationResult validate(File xmlFileToValidate, File[] xsdFiles) throws ValidationServiceException {
 
+		if (logger.isDebugEnabled()) {
+			logger.debug("xmlFileToValidate->" + xmlFileToValidate);
+			logger.debug("xsdFiles->" + xsdFiles);
+		}
+
+		InputStream[] inXsds = new InputStream[xsdFiles.length];			
+
+		try {
+
+			for (int i = 0; i < xsdFiles.length; i++) {
+				inXsds[i] = new FileInputStream(xsdFiles[i]);
+			}
+
+			Source[] schemaSources = new Source[inXsds.length];
+			for (int i = 0; i < inXsds.length; i++) {
+				schemaSources[i] = new StreamSource(inXsds[i]);
+			}
+
+			return this.validate(xmlFileToValidate, schemaSources);
+
+		} catch (IOException e) {
+			
+				logger.error(e.getMessage(), e);
+				throw new ValidationServiceException(e);			
+
+		} finally {
+			if (inXsds != null && inXsds.length > 0) {
+
+				for (int i = 0; i < inXsds.length; i++) {
+					try {
+						if(inXsds[i]!=null){
+							inXsds[i].close();
+						}
+					} catch (IOException e) {
+						logger.error(e.getMessage(), e);
+					}
+				}
+			}
+		
+		}	
+	}
+
+	@Override
+	public ValidationResult validate(File xmlFileToValidate, URL[] xsdFiles) throws ValidationServiceException {		
+		return this.validate(xmlFileToValidate, xsdFiles);
 	}
 
 }
