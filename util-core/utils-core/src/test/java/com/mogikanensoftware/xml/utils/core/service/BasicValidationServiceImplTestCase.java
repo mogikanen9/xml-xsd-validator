@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoBean;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.impl.BasicValidationServiceImpl;
+import com.mogikanensoftware.xml.utils.core.service.impl.SAXErrorsParsingServiceImpl;
 
 import junit.framework.TestCase;
 
@@ -17,7 +18,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	public void testValidate() {
 		try {
-			ValidationService validationService = new BasicValidationServiceImpl();
+			ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
 
 			String xsdFilePath = BasicValidationServiceImplTestCase.class
 					.getResource("/xml/core/xsd/SimpleXMLSchema1.xsd").getFile();
@@ -104,7 +105,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 	}
 	
 	protected ValidationResult validateAgainstHRMXsd(String xmlFilePath) throws ValidationServiceException{
-		ValidationService validationService = new BasicValidationServiceImpl();
+		ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
 
 		String xsdFilePath1 = BasicValidationServiceImplTestCase.class
 				.getResource("/xml/core/xsd/report_manager.xsd").getFile();

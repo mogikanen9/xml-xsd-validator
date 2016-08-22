@@ -11,6 +11,7 @@ import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 import com.mogikanensoftware.xml.utils.core.service.impl.BasicValidationServiceImpl;
+import com.mogikanensoftware.xml.utils.core.service.impl.SAXErrorsParsingServiceImpl;
 
 public class MainApp {
 
@@ -58,7 +59,7 @@ public class MainApp {
 
 					logger.info("About to validate xml file ->" + xmlFile + " agaiinst "+xsdFiles.length+" xsd file(s)");
 
-					ValidationService validationService = new BasicValidationServiceImpl();
+					ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
 					try {
 						ValidationResult rs = validationService.validate(xmlFile, xsdFiles);
 
