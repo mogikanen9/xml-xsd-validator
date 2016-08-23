@@ -1,9 +1,12 @@
 package com.mogikanensoftware.xml.utils.core.service;
 
 import java.io.File;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.junit.Test;
 
 import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoBean;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
@@ -16,6 +19,23 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	private static final Logger logger = LogManager.getLogger(BasicValidationServiceImplTestCase.class);
 
+	private String xsdReportManager = BasicValidationServiceImplTestCase.class
+				.getResource("/xml/core/xsd/report_manager.xsd").getFile();
+	private String xsdReportManagerDt = BasicValidationServiceImplTestCase.class
+				.getResource("/xml/core/xsd/report_manager_dt.xsd").getFile();
+	
+	private URL urlXsdReportManager;
+	private URL urlXsdReportManagerDt;
+	
+	
+	public BasicValidationServiceImplTestCase() throws MalformedURLException {
+		super();
+		
+		urlXsdReportManager = new URL(Constants.REPORT_MANAGER_XSD);
+		urlXsdReportManagerDt = new URL(Constants.REPORT_MANAGER_DT_XSD);
+	}
+
+	@Test
 	public void testValidate() {
 		try {
 			ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
@@ -50,6 +70,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	}
 
+	@Test
 	public void testValidateValidMR() {
 		try {
 			
@@ -57,7 +78,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 			String xmlFilePath = BasicValidationServiceImplTestCase.class.getResource("/xml/core/files/MR_Final1.xml")
 					.getFile();
 
-			ValidationResult result = validateAgainstHRMXsd(xmlFilePath);
+			ValidationResult result = validateAgainstHRMLocalXsd(xmlFilePath, new String[]{xsdReportManager, xsdReportManagerDt});
 
 			assertNotNull(result);
 			assertNotNull(result.getValidationErrors());
@@ -77,6 +98,35 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	}
 	
+	@Test
+	public void testValidateValidMRRemote() {
+		try {
+			
+			
+			String xmlFilePath = BasicValidationServiceImplTestCase.class.getResource("/xml/core/files/MR_Final1.xml")
+					.getFile();
+
+			ValidationResult result = validateAgainstHRMRemoteXsd(new File(xmlFilePath), new URL[]{urlXsdReportManager, urlXsdReportManagerDt});
+
+			assertNotNull(result);
+			assertNotNull(result.getValidationErrors());
+			assertTrue(result.getValidationErrors().size() == 0);
+			assertTrue(result.getValidationWarnings().size() == 0);
+			
+			logger.info("All validation errors: \n");
+
+			for (ValidationInfoBean info : result.getValidationErrors()) {
+				logger.info(info.toString());
+			}
+
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+		}
+		logger.info("Done");
+
+	}
+	
+	@Test
 	public void testValidateInvalidMR() {
 		try {
 			
@@ -84,7 +134,7 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 			String xmlFilePath = BasicValidationServiceImplTestCase.class.getResource("/xml/core/files/MR_Invalid.xml")
 					.getFile();
 
-			ValidationResult result = validateAgainstHRMXsd(xmlFilePath);
+			ValidationResult result = validateAgainstHRMLocalXsd(xmlFilePath, new String[]{xsdReportManager, xsdReportManagerDt});
 
 			assertNotNull(result);
 			assertNotNull(result.getValidationErrors());
@@ -104,23 +154,29 @@ public class BasicValidationServiceImplTestCase extends TestCase {
 
 	}
 	
-	protected ValidationResult validateAgainstHRMXsd(String xmlFilePath) throws ValidationServiceException{
+	protected ValidationResult validateAgainstHRMLocalXsd(String xmlFilePath, String[] xsds) throws ValidationServiceException{
 		ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
 
-		String xsdFilePath1 = BasicValidationServiceImplTestCase.class
-				.getResource("/xml/core/xsd/report_manager.xsd").getFile();
-		String xsdFilePath2 = BasicValidationServiceImplTestCase.class
-				.getResource("/xml/core/xsd/report_manager_dt.xsd").getFile();
-				
-
-		logger.info("xsdFilePath1->" + xsdFilePath1);
-		logger.info("xsdFilePath2->" + xsdFilePath2);
+		File[] xsdFiles = new File[xsds.length];
+		for (int i=0;i<xsds.length;i++) {
+			logger.info(String.format("xsdFilePath -> %s", xsds[i]));
+			xsdFiles[i] = new File(xsds[i]);
+		}
+	
 		logger.info("xmlFilePath->" + xmlFilePath);
-
-		File xsdFile1 = new File(xsdFilePath1);
-		File xsdFile2 = new File(xsdFilePath2);
 		File xmlFile = new File(xmlFilePath);
-		return validationService.validate(xmlFile, new File[]{xsdFile1,xsdFile2});
-
+		
+		return validationService.validate(xmlFile, xsdFiles);
 	}
+	
+	protected ValidationResult validateAgainstHRMRemoteXsd(File xmlFile, URL[] xsdFiles) throws ValidationServiceException{
+		ValidationService validationService = new BasicValidationServiceImpl(new SAXErrorsParsingServiceImpl());
+		
+		for (URL url : xsdFiles) {
+			logger.info(String.format("remote xsd - >%s", url));
+		}
+		
+		return validationService.validate(xmlFile, xsdFiles);
+	}
+	
 }

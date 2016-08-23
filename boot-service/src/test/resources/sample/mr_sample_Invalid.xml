@@ -1,0 +1,22 @@
+<?xml version="1.0"?>
+<OmdCds xmlns="cds" xmlns:cdst="cds_dt" xmlns:dfl="cds" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="cds http://mogikanen9.github.io/xml-xsd-validator/schemas/report_manager.xsd"><PatientRecord><Demographics><Names><cdst:LegalName namePurpose="L"><cdst:FirstName><cdst:Part>FirstNameOne</cdst:Part><cdst:PartQualifier>CL</cdst:PartQualifier><cdst:PartType>GIV</cdst:PartType></cdst:FirstName><cdst:LastName><cdst:Part>FamilyNameOne</cdst:Part><cdst:PartQualifier>BR</cdst:PartQualifier><cdst:PartType>FAMC</cdst:PartType></cdst:LastName><cdst:OtherName><cdst:Part>SecondName</cdst:Part><cdst:PartQualifier>CL</cdst:PartQualifier><cdst:PartType>GIV</cdst:PartType></cdst:OtherName></cdst:LegalName></Names><DateOfBirth><cdst:FullDate>1955-03-03</cdst:FullDate></DateOfBirth><HealthCard><cdst:Number>HCNumber101010</cdst:Number><cdst:Version>AA</cdst:Version><cdst:ProvinceCode>CA-ON</cdst:ProvinceCode></HealthCard><Gender>U</Gender><UniqueVendorIdSequence>0</UniqueVendorIdSequence><Address addressType="R"><cdst:Structured><cdst:Line1>200 FLETCHER CRES</cdst:Line1><cdst:Line2></cdst:Line2><cdst:City>ALLISTON</cdst:City><cdst:CountrySubdivisionCode>CANAB</cdst:CountrySubdivisionCode><cdst:PostalZipCode><cdst:PostalCode>L9R1V4</cdst:PostalCode></cdst:PostalZipCode></cdst:Structured></Address><PhoneNumber phoneNumberType="DF"><cdst:phoneNumber>(333)333-3333000000000000000000000000000000000</cdst:phoneNumber></PhoneNumber><PersonStatusCode>A</PersonStatusCode></Demographics><ReportsReceived><Media>Download</Media><Format>Text</Format><FileExtensionAndVersion>From OMD Report Manager</FileExtensionAndVersion><Content><cdst:TextContent>3.1.5.1 - OBR 1 empty 
+
+Set ID in OBR-1 not populated. 
+ 
+Output file created successfully, OBR-1 is populated with &apos;1&apos; in black box.  
+ 
+     Read By- GIOVANNI BRUNO , MD,MSc(Physics),DABR,FRCP(C)
+     Released By- GIOVANNI BRUNO , MD,MSc(Physics),DABR,FRCP(C)
+     Transcriptionist- MER , TRANSCRIPTIONIST
+     Released Date Time- 03/14/14 1519
+ ------------------------------------------------------------------------------
+ 
+McKesson testing please disregard
+EDITING ADDENDUM
+     Addendum Read By- GIOVANNI BRUNO , MD,MSc(Physics),DABR,FRCP(C)
+     Addendum Released By- GIOVANNI BRUNO , MD,MSc(Physics),DABR,FRCP(C)
+     Addendum Transcriptionist- MER , TRANSCRIPTIONIST
+     Addendum Released Date Time- 05/02/14 1636
+ ------------------------------------------------------------------------------
+980844
+</cdst:TextContent></Content><Class>Medical Records Report</Class><SubClass>5004^US ABDOMINAL SCAN LTD-AB</SubClass><EventDateTime><cdst:DateTime>2014-03-14T15:18:00</cdst:DateTime></EventDateTime><AuthorPhysician><cdst:LastName>^PHYSICIANLAST^PHYSICIANFIRST^^^^</cdst:LastName></AuthorPhysician><SendingFacility>1234</SendingFacility><SendingFacilityReportNumber>00252525</SendingFacilityReportNumber><ResultStatus>S</ResultStatus></ReportsReceived><TransactionInformation><MessageUniqueID>20150916115013492^JA_3.1.5^1234^MR^00252525^199901291636^T^^F^S60482035^20</MessageUniqueID><DeliverToUserID>NJA111555000000000000000</DeliverToUserID><Provider><cdst:FirstName>Jelena</cdst:FirstName><cdst:LastName>RNP</cdst:LastName></Provider></TransactionInformation></PatientRecord></OmdCds>

@@ -17,6 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
+import com.mogikanensoftware.xml.utils.core.service.Constants;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 
@@ -28,9 +29,8 @@ public class MainController {
 	@Autowired
 	private ValidationService validationService;
 	
-		
 	@RequestMapping(value="/validate",method = RequestMethod.POST)
-	public ValidationResult validate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate){
+	public ValidationResult validate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate) throws Exception{
 		try {
 			String folderPath = System.getProperty("java.io.tmpdir");			
 			logger.info(String.format("folderPath -> %s", folderPath));
@@ -40,13 +40,22 @@ public class MainController {
 			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(folderPath, fileName));
 			
 			File  file = new File(folderPath,fileName);
-			return validationService.validate(file, new File[]{
-					new File("C:/XMLforSpec4.1A/report_manager.xsd"),
-					new File("C:/XMLforSpec4.1A/report_manager_dt.xsd")
+			
+			
+			//TODO - extract xsd urls as a separate service parameters
+			ValidationResult rs = validationService.validate(file, new URL[]{
+					new URL(Constants.REPORT_MANAGER_XSD),
+					new URL(Constants.REPORT_MANAGER_DT_XSD)
 			});
+			
+			if(logger.isDebugEnabled()){
+				logger.debug(String.format("ValidationResult -> %s", rs.toString()));
+			}
+			
+			return rs;
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(),e);
+			throw e;
 		}
-		return new ValidationResult();
 	}
 }
