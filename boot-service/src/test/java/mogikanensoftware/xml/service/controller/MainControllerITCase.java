@@ -6,13 +6,17 @@ import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.ContentType;
 import org.apache.http.entity.mime.MultipartEntityBuilder;
 import org.apache.http.entity.mime.content.FileBody;
+import org.apache.http.entity.mime.content.StringBody;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
+import com.mogikanensoftware.xml.utils.core.service.Constants;
 
 public class MainControllerITCase {
 
@@ -22,23 +26,36 @@ public class MainControllerITCase {
 	public static void main(String[] args) throws Exception {
 
 		MainControllerITCase
-				.executePostRequest(MainControllerITCase.class.getResource("/sample/simpledata.dta").getFile());
+				.executePostRequest("/defaultValidate",MainControllerITCase.class.getResource("/sample/simpledata.dta").getFile(),null);
+		
+		String[] xsdUrl = new String[]{Constants.REPORT_MANAGER_XSD, Constants.REPORT_MANAGER_DT_XSD};
+		
 		MainControllerITCase
-				.executePostRequest(MainControllerITCase.class.getResource("/sample/mr_sample_valid.xml").getFile());
+				.executePostRequest("/validate",MainControllerITCase.class.getResource("/sample/mr_sample_valid.xml").getFile(),xsdUrl);
 		MainControllerITCase
-				.executePostRequest(MainControllerITCase.class.getResource("/sample/mr_sample_invalid.xml").getFile());
+				.executePostRequest("/validate",MainControllerITCase.class.getResource("/sample/mr_sample_invalid.xml").getFile(),xsdUrl);
 	}
 
-	protected static void executePostRequest(String filePath) throws Exception {
+	protected static void executePostRequest(String targetUrl, String filePath, String[] xsdUrls) throws Exception {
 		CloseableHttpClient httpclient = HttpClients.createDefault();
 		try {
-			HttpPost httppost = new HttpPost(SERVICE_HOST + "/validate");
+			HttpPost httppost = new HttpPost(SERVICE_HOST + targetUrl);
 
 			FileBody bin = new FileBody(new File(filePath));
 
-			HttpEntity reqEntity = MultipartEntityBuilder.create().addPart("xmlFileToValidate", bin).build();
+			MultipartEntityBuilder builder = MultipartEntityBuilder.create();
+			
+			
+			builder.addPart("xmlFileToValidate", bin);
+			if(xsdUrls!=null && xsdUrls.length>0){
+				for (String xsdUrlValue : xsdUrls) {
+					builder.addPart("xsdUrls[]", new StringBody(xsdUrlValue,ContentType.TEXT_PLAIN));
+				}
+			}									
 
+			HttpEntity reqEntity = builder.build();
 			httppost.setEntity(reqEntity);
+			httppost.addHeader("testValue", "kokojambo");						
 
 			logger.info("executing request " + httppost.getRequestLine());
 			CloseableHttpResponse response = httpclient.execute(httppost);
