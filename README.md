@@ -1,2 +1,3 @@
 # xml-xsd-validator
-xml and xsd with advanced error handling  validation utility 
+
+The purpsoe of this project is to try implementing xml validation service with advanced and xsd error handling. 
