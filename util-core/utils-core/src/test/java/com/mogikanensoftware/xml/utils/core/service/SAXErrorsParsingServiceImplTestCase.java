@@ -1,13 +1,13 @@
 package com.mogikanensoftware.xml.utils.core.service;
 
-
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import com.mogikanensoftware.xml.utils.core.service.impl.SAXErrorsParsingServiceImpl;
 
-import junit.framework.Assert;
+import org.junit.Assert;
+import org.junit.Test;
+
 import junit.framework.TestCase;
 
 public class SAXErrorsParsingServiceImplTestCase extends TestCase {
@@ -17,6 +17,7 @@ public class SAXErrorsParsingServiceImplTestCase extends TestCase {
 	protected ParsingService parsingService = new SAXErrorsParsingServiceImpl();
 		
 
+	@Test
 	public void testExtractErrorType() throws ParsingServiceException {
 		String rs = parsingService.extractErrorType("cvc-type.3.1.3: The value 'NJA111555000000000000000' of element 'DeliverToUserID' is not valid");
 		Assert.assertEquals("cvc-type.3.1.3", rs);
@@ -32,6 +33,7 @@ public class SAXErrorsParsingServiceImplTestCase extends TestCase {
 		
 	}
 
+	@Test
 	public void testExtractElementName() throws ParsingServiceException {
 		String rs = parsingService.extractElementName("cvc-type.3.1.3: The value 'NJA111555000000000000000' of element 'DeliverToUserID' is not valid");
 		Assert.assertEquals("DeliverToUserID", rs);
@@ -46,6 +48,7 @@ public class SAXErrorsParsingServiceImplTestCase extends TestCase {
 		logger.info("rs->"+rs);
 	}
 
+	@Test
 	public void testSupressActualElementValue() throws ParsingServiceException {
 		String rs = parsingService.supressActualElementValue("cvc-type.3.1.3: The value 'NJA111555000000000000000' of element 'DeliverToUserID' is not valid");
 		Assert.assertEquals("cvc-type.3.1.3: The value  of element 'DeliverToUserID' is not valid", rs);
