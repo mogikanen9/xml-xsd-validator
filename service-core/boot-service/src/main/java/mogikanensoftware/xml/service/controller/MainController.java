@@ -5,7 +5,9 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.sql.Date;
 import java.util.Arrays;
+import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -22,6 +24,9 @@ import com.mogikanensoftware.xml.utils.core.service.Constants;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 
+import mogikanensoftware.xml.service.data.dao.ResultRepository;
+import mogikanensoftware.xml.service.data.entity.Result;
+
 @RestController
 public class MainController {
 
@@ -29,6 +34,9 @@ public class MainController {
 
 	@Autowired
 	private ValidationService validationService;
+	
+	@Autowired
+	private ResultRepository resultRepository;
 
 	@RequestMapping(value = "/defaultValidate", method = RequestMethod.POST)
 	public ValidationResult defaultValidate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate)
@@ -66,6 +74,8 @@ public class MainController {
 				logger.debug(String.format("ValidationResult -> %s", rs.toString()));
 			}
 
+			Result newResult = resultRepository.save(new Result(new Date(System.currentTimeMillis()),xmlFileToValidate.getOriginalFilename()));
+			logger.info(String.format("result saved with id  ->%d", newResult.getId()));
 			return rs;
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(), e);
@@ -73,4 +83,8 @@ public class MainController {
 		}
 	}
 
+	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
+	public Iterable<Result> listResults(){
+		return resultRepository.findAll();
+	}
 }
