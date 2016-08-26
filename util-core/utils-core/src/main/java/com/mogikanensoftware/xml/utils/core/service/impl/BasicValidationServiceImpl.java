@@ -54,7 +54,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 		InputStream inXml = null;
 
 		CustomSAXErrorHandler customErrorHandler = new CustomSAXErrorHandler();
-		ValidationResult rs = new ValidationResult();
+		ValidationResult rs = new ValidationResult(xmlFileToValidate.getName());
 
 		try {
 

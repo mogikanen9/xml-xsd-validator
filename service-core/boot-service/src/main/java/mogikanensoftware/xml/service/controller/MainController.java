@@ -28,6 +28,8 @@ import mogikanensoftware.xml.service.data.dao.ItemRepository;
 import mogikanensoftware.xml.service.data.dao.ResultRepository;
 import mogikanensoftware.xml.service.data.entity.Item;
 import mogikanensoftware.xml.service.data.entity.Result;
+import mogikanensoftware.xml.service.data.sm.ServiceManager;
+import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 import mogikanensoftware.xml.service.data.transform.CustomTransformator;
 
 
@@ -40,13 +42,9 @@ public class MainController {
 	private ValidationService validationService;
 	
 	@Autowired
-	private ResultRepository resultRepository;
-	
-	@Autowired
-	private ItemRepository itemRepository;
+	private ServiceManager serviceManager;
 
-	@Autowired
-	private CustomTransformator customTransformator;
+	
 	
 	@RequestMapping(value = "/defaultValidate", method = RequestMethod.POST)
 	public ValidationResult defaultValidate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate)
@@ -78,21 +76,19 @@ public class MainController {
 				xsds[i] = new URL(xsdUrls[i]);
 			}
 
-			ValidationResult rs = validationService.validate(file, xsds);
+			ValidationResult validationResult = validationService.validate(file, xsds);
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("ValidationResult -> %s", rs.toString()));
+				logger.debug(String.format("ValidationResult -> %s", validationResult.toString()));
 			}
 
-			Result newResult = new Result(new Date(System.currentTimeMillis()),xmlFileToValidate.getOriginalFilename());
-			newResult = resultRepository.save(newResult);
-			logger.info(String.format("result saved with id  ->%d", newResult.getId()));
+			Long resultId = serviceManager.logValidationResults(validationResult);
+			logger.info(String.format("result saved with id  ->%d", resultId));			
 			
-			List<Item> items = this.customTransformator.transform(rs.getValidationErrors(),newResult);
-			itemRepository.save(items);
 			
 			logger.info("items were saved");
-			return rs;
+			return validationResult;
+			
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(), e);
 			throw e;
@@ -100,12 +96,22 @@ public class MainController {
 	}
 
 	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
-	public Iterable<Result> listResults(){
-		return resultRepository.findAll();
+	public Iterable<Result> listResults() throws Exception{
+		try {
+			return serviceManager.listResults();
+		} catch (ServiceManagerException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
 	}
 	
 	@RequestMapping(value = "/listItems", method = RequestMethod.GET)
-	public Iterable<Item> listItems(){
-		return itemRepository.findAll();
+	public Iterable<Item> listItems() throws Exception{
+		try {
+			return serviceManager.listItems();
+		} catch (ServiceManagerException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}		
 	}
 }
