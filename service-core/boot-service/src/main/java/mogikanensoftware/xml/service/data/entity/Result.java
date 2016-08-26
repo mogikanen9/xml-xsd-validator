@@ -22,7 +22,7 @@ public class Result implements Serializable{
 
 	@Column(nullable=false)
 	private String fileName;
-	
+
 	public Result() {
 		super();
 	}
@@ -32,7 +32,7 @@ public class Result implements Serializable{
 		this.dateTime = dateTime;
 		this.fileName = fileName;
 	}
-
+	
 	public Date getDateTime() {
 		return dateTime;
 	}

@@ -24,8 +24,12 @@ import com.mogikanensoftware.xml.utils.core.service.Constants;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 
+import mogikanensoftware.xml.service.data.dao.ItemRepository;
 import mogikanensoftware.xml.service.data.dao.ResultRepository;
+import mogikanensoftware.xml.service.data.entity.Item;
 import mogikanensoftware.xml.service.data.entity.Result;
+import mogikanensoftware.xml.service.data.transform.CustomTransformator;
+
 
 @RestController
 public class MainController {
@@ -37,7 +41,13 @@ public class MainController {
 	
 	@Autowired
 	private ResultRepository resultRepository;
+	
+	@Autowired
+	private ItemRepository itemRepository;
 
+	@Autowired
+	private CustomTransformator customTransformator;
+	
 	@RequestMapping(value = "/defaultValidate", method = RequestMethod.POST)
 	public ValidationResult defaultValidate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate)
 			throws Exception {
@@ -74,8 +84,14 @@ public class MainController {
 				logger.debug(String.format("ValidationResult -> %s", rs.toString()));
 			}
 
-			Result newResult = resultRepository.save(new Result(new Date(System.currentTimeMillis()),xmlFileToValidate.getOriginalFilename()));
+			Result newResult = new Result(new Date(System.currentTimeMillis()),xmlFileToValidate.getOriginalFilename());
+			newResult = resultRepository.save(newResult);
 			logger.info(String.format("result saved with id  ->%d", newResult.getId()));
+			
+			List<Item> items = this.customTransformator.transform(rs.getValidationErrors(),newResult);
+			itemRepository.save(items);
+			
+			logger.info("items were saved");
 			return rs;
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(), e);
@@ -86,5 +102,10 @@ public class MainController {
 	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
 	public Iterable<Result> listResults(){
 		return resultRepository.findAll();
+	}
+	
+	@RequestMapping(value = "/listItems", method = RequestMethod.GET)
+	public Iterable<Item> listItems(){
+		return itemRepository.findAll();
 	}
 }
