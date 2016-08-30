@@ -1,4 +1,4 @@
-package com.mogikanensoftware.xml.utils.core.service;
+package com.mogikanensoftware.xml.utils.core.service.impl;
 
 import java.io.File;
 import java.net.MalformedURLException;
@@ -10,6 +10,9 @@ import org.junit.Test;
 
 import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoBean;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
+import com.mogikanensoftware.xml.utils.core.service.Constants;
+import com.mogikanensoftware.xml.utils.core.service.ValidationService;
+import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 import com.mogikanensoftware.xml.utils.core.service.impl.BasicValidationServiceImpl;
 import com.mogikanensoftware.xml.utils.core.service.impl.SAXErrorsParsingServiceImpl;
 

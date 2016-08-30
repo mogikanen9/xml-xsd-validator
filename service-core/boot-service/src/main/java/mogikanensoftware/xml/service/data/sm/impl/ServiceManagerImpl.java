@@ -22,15 +22,22 @@ import mogikanensoftware.xml.service.data.transform.CustomTransformator;
 @Transactional
 public class ServiceManagerImpl implements ServiceManager {
 
-	@Autowired
 	private ResultRepository resultRepository;
-	
-	@Autowired
+		
 	private ItemRepository itemRepository;
 
-	@Autowired
 	private CustomTransformator customTransformator;
 	
+	
+	@Autowired
+	public ServiceManagerImpl(ResultRepository resultRepository, ItemRepository itemRepository,
+			CustomTransformator customTransformator) {
+		super();
+		this.resultRepository = resultRepository;
+		this.itemRepository = itemRepository;
+		this.customTransformator = customTransformator;
+	}
+
 	@Override
 	public Long logValidationResults(ValidationResult validationResult) throws ServiceManagerException {
 		
