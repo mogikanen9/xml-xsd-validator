@@ -80,11 +80,8 @@ public class SAXErrorsParsingServiceImpl implements ParsingService {
 		
 		if(indexFrom!=-1){
 			int indexTo = errorMessage.toLowerCase().indexOf("'", indexFrom+7);
-			if(indexFrom!=-1){
-				rs = errorMessage.substring(0,indexFrom+6)+ errorMessage.substring(indexTo+1);	
-			}else{
-				logger.warn("Cannot find the END of the actual element value to suppress it. errorMessage->"+errorMessage);
-			}			
+			rs = errorMessage.substring(0,indexFrom+6)+ errorMessage.substring(indexTo+1);	
+				
 		}else{
 			logger.warn("Cannot find actual element value to suppress it. errorMessage->"+errorMessage);
 		}

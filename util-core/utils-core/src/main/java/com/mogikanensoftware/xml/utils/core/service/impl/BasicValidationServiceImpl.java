@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Arrays;
 
 import javax.xml.XMLConstants;
 import javax.xml.transform.Source;
@@ -48,7 +49,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 	public ValidationResult validate(File xmlFileToValidate, Source[] schemaSources) throws ValidationServiceException {
 		if (logger.isDebugEnabled()) {
 			logger.debug("xmlFileToValidate->" + xmlFileToValidate);
-			logger.debug("schemaSources->" + schemaSources);
+			logger.debug("schemaSources.length ->" + schemaSources.length);
 		}
 
 		InputStream inXml = null;
@@ -142,7 +143,7 @@ public class BasicValidationServiceImpl implements ValidationService {
 
 		if (logger.isDebugEnabled()) {
 			logger.debug("xmlFileToValidate->" + xmlFileToValidate);
-			logger.debug("xsdFiles->" + xsdFiles);
+			logger.debug("xsdFiles.length ->" + xsdFiles.length);
 		}
 
 		InputStream[] inXsds = new InputStream[xsdFiles.length];
