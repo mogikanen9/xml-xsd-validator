@@ -16,7 +16,7 @@ import com.mogikanensoftware.xml.utils.core.bean.ValidationInfoType;
 import mogikanensoftware.xml.service.data.entity.Item;
 import mogikanensoftware.xml.service.data.entity.Result;
 
-public class DirectCustomTransformatorImplTestCase {
+public class DirectCustomTransformatorImplTests{
 
 	private DirectCustomTransformatorImpl transformator;
 
@@ -65,12 +65,12 @@ public class DirectCustomTransformatorImplTestCase {
 
 	
 	@Test
-	public void testTransofrmationFunc(){
+	public void testGetTransformationFunction(){
 		
-		Function<ValidationInfoBean, Item> mapToItem = transformator.getTransfromationFunction(null);
+		Function<ValidationInfoBean, Item> mapToItem = transformator.getTransformationFunction(null);
 		Assert.assertNotNull(mapToItem);
 		
-		mapToItem = transformator.getTransfromationFunction(Mockito.mock(Result.class));
+		mapToItem = transformator.getTransformationFunction(Mockito.mock(Result.class));
 		Assert.assertNotNull(mapToItem);
 		
 		Item rsItem = null;

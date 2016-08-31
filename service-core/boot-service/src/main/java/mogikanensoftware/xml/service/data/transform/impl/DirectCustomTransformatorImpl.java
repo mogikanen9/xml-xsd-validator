@@ -20,12 +20,12 @@ public class DirectCustomTransformatorImpl implements CustomTransformator {
 	@Override
 	public List<Item> transform (Set<ValidationInfoBean> viBeans, final Result result) {
 		
-		Function<ValidationInfoBean, Item> mapToItem = this.getTransfromationFunction(result);
+		Function<ValidationInfoBean, Item> mapToItem = this.getTransformationFunction(result);
 		return viBeans.stream().map(mapToItem).collect(Collectors.toList());
 		
 	}
 
-	protected Function<ValidationInfoBean, Item> getTransfromationFunction(final Result result){
+	protected Function<ValidationInfoBean, Item> getTransformationFunction(final Result result){
 		return new Function<ValidationInfoBean, Item>() {
 		    public Item apply(ValidationInfoBean viBean) {
 		    	Item item = new Item();

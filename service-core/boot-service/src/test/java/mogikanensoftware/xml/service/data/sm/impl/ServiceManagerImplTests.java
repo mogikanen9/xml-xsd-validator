@@ -18,7 +18,7 @@ import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringBootTest(classes = TestAppConfig.class)
-public class ServiceManagerImplTestCase {
+public class ServiceManagerImplTests {
 
 	@Autowired
 	private ServiceManager serviceManager;

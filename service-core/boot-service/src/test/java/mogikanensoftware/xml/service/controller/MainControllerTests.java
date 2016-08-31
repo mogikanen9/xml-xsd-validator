@@ -2,7 +2,7 @@ package mogikanensoftware.xml.service.controller;
 
 import org.junit.Test;
 
-public class MainControllerTestCase {
+public class MainControllerTests {
 
 	@Test
 	public void testDefaultValidate() {

@@ -5,9 +5,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.sql.Date;
 import java.util.Arrays;
-import java.util.List;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -24,13 +22,10 @@ import com.mogikanensoftware.xml.utils.core.service.Constants;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 
-import mogikanensoftware.xml.service.data.dao.ItemRepository;
-import mogikanensoftware.xml.service.data.dao.ResultRepository;
 import mogikanensoftware.xml.service.data.entity.Item;
 import mogikanensoftware.xml.service.data.entity.Result;
 import mogikanensoftware.xml.service.data.sm.ServiceManager;
 import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
-import mogikanensoftware.xml.service.data.transform.CustomTransformator;
 
 
 @RestController
