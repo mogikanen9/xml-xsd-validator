@@ -1,5 +1,6 @@
 package mogikanensoftware.xml.service.data.transform.impl;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.function.Function;
@@ -61,6 +62,17 @@ public class DirectCustomTransformatorImplTests{
 			Assert.assertNull(listOfItems);
 		}
 		
+		viBeans = new HashSet<>();
+		ValidationInfoBean vBeanError = Mockito.mock(ValidationInfoBean.class);
+		Mockito.when(vBeanError.getInfoType()).thenReturn(ValidationInfoType.error);
+		ValidationInfoBean vBeanWarning = Mockito.mock(ValidationInfoBean.class);
+		Mockito.when(vBeanWarning.getInfoType()).thenReturn(ValidationInfoType.error);
+		viBeans.add(vBeanError);
+		viBeans.add(vBeanWarning);
+		
+		listOfItems = transformator.transform(viBeans, result);
+		Assert.assertNotNull(listOfItems);
+		Assert.assertTrue(listOfItems.size()==2);
 	}
 
 	

@@ -32,15 +32,22 @@ public class ServiceManagerImplTests {
 	}
 
 	@Test
-	public void testListResults() throws ServiceManagerException {
-		Iterable<Result> results = serviceManager.listResults();
-		//TODO
+	public void testListResults() {
+		try {
+			Iterable<Result> results = serviceManager.listResults();
+		} catch (ServiceManagerException e) {
+			Assert.fail(e.getMessage());
+		}
+		
 	}
 
 	@Test
 	public void testListItems() throws ServiceManagerException {
+		try {
 		Iterable<Item> items = serviceManager.listItems();
-		//TODO
+		} catch (ServiceManagerException e) {
+			Assert.fail(e.getMessage());
+		}
 	}
 
 }

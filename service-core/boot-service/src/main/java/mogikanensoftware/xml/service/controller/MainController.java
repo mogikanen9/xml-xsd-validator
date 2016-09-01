@@ -53,7 +53,9 @@ public class MainController {
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
 		try {
 			String folderPath = System.getProperty("java.io.tmpdir");
-			logger.info(String.format("folderPath -> %s", folderPath));
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("folderPath -> %s", folderPath));
+			}
 
 			logger.info("xsdUrls->");
 			Arrays.stream(xsdUrls).forEach(logger::info);
@@ -61,7 +63,10 @@ public class MainController {
 
 			String fileName = xmlFileToValidate.getOriginalFilename() + System.currentTimeMillis()
 					+ UUID.randomUUID().toString();
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("tmp fileName->"+fileName);
+			}
+			
 			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(folderPath, fileName));
 
 			File file = new File(folderPath, fileName);

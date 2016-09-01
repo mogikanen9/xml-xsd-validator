@@ -1,11 +1,17 @@
 package mogikanensoftware.xml.service;
 
-//@RunWith(SpringRunner.class)
-//@SpringBootTest(classes = TestAppConfig.class)
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit4.SpringRunner;
+
+@RunWith(SpringRunner.class)
+@SpringBootTest(classes = TestAppConfig.class)
 public class BootServiceApplicationTests {
 
-	//@Test
+	@Test
 	public void contextLoads() {
+		
 	}
 
 }

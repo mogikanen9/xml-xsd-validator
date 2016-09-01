@@ -15,21 +15,23 @@ import mogikanensoftware.xml.service.data.transform.CustomTransformator;
 @Configuration
 public class TestAppConfig {
 
+	
 	@Bean
 	public ResultRepository getResultRepository(){
-		ResultRepository rs = Mockito.mock(ResultRepository.class);
+		ResultRepository resultRepo = Mockito.mock(ResultRepository.class);
 		
 		//custom mock 4 save
 		Result savedResult = new Result();
 		savedResult.setId(System.currentTimeMillis());
-		Mockito.when(rs.save((Result)Matchers.any())).thenReturn(savedResult);
+		Mockito.when(resultRepo.save((Result)Matchers.any())).thenReturn(savedResult);
 		
-		return rs;
+		return resultRepo;
 	}
 	
 	@Bean
 	public ItemRepository getItemRepository(){
-		return Mockito.mock(ItemRepository.class);
+		ItemRepository itemRepo = Mockito.mock(ItemRepository.class);
+		return itemRepo;
 	}
 
 	@Bean
