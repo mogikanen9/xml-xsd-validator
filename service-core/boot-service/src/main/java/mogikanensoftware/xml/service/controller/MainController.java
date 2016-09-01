@@ -22,6 +22,12 @@ import com.mogikanensoftware.xml.utils.core.service.Constants;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
 import com.mogikanensoftware.xml.utils.core.service.ValidationServiceException;
 
+import mogikanensoftware.xml.service.data.entity.Item;
+import mogikanensoftware.xml.service.data.entity.Result;
+import mogikanensoftware.xml.service.data.sm.ServiceManager;
+import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
+
+
 @RestController
 public class MainController {
 
@@ -29,7 +35,12 @@ public class MainController {
 
 	@Autowired
 	private ValidationService validationService;
+	
+	@Autowired
+	private ServiceManager serviceManager;
 
+	
+	
 	@RequestMapping(value = "/defaultValidate", method = RequestMethod.POST)
 	public ValidationResult defaultValidate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate)
 			throws Exception {
@@ -42,7 +53,9 @@ public class MainController {
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
 		try {
 			String folderPath = System.getProperty("java.io.tmpdir");
-			logger.info(String.format("folderPath -> %s", folderPath));
+			if (logger.isDebugEnabled()) {
+				logger.debug(String.format("folderPath -> %s", folderPath));
+			}
 
 			logger.info("xsdUrls->");
 			Arrays.stream(xsdUrls).forEach(logger::info);
@@ -50,7 +63,10 @@ public class MainController {
 
 			String fileName = xmlFileToValidate.getOriginalFilename() + System.currentTimeMillis()
 					+ UUID.randomUUID().toString();
-
+			if (logger.isDebugEnabled()) {
+				logger.debug("tmp fileName->"+fileName);
+			}
+			
 			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(folderPath, fileName));
 
 			File file = new File(folderPath, fileName);
@@ -60,17 +76,42 @@ public class MainController {
 				xsds[i] = new URL(xsdUrls[i]);
 			}
 
-			ValidationResult rs = validationService.validate(file, xsds);
+			ValidationResult validationResult = validationService.validate(file, xsds);
 
 			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("ValidationResult -> %s", rs.toString()));
+				logger.debug(String.format("ValidationResult -> %s", validationResult.toString()));
 			}
 
-			return rs;
+			Long resultId = serviceManager.logValidationResults(validationResult);
+			logger.info(String.format("result saved with id  ->%d", resultId));			
+			
+			
+			logger.info("items were saved");
+			return validationResult;
+			
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(), e);
 			throw e;
 		}
 	}
 
+	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
+	public Iterable<Result> listResults() throws Exception{
+		try {
+			return serviceManager.listResults();
+		} catch (ServiceManagerException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
+	}
+	
+	@RequestMapping(value = "/listItems", method = RequestMethod.GET)
+	public Iterable<Item> listItems() throws Exception{
+		try {
+			return serviceManager.listItems();
+		} catch (ServiceManagerException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}		
+	}
 }

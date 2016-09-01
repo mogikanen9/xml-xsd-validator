@@ -1,8 +1,10 @@
-package com.mogikanensoftware.xml.utils.core.service;
+package com.mogikanensoftware.xml.utils.core.service.impl;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import com.mogikanensoftware.xml.utils.core.service.ParsingService;
+import com.mogikanensoftware.xml.utils.core.service.ParsingServiceException;
 import com.mogikanensoftware.xml.utils.core.service.impl.SAXErrorsParsingServiceImpl;
 
 import org.junit.Assert;
