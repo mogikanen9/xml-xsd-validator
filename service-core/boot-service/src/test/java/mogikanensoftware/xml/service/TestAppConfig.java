@@ -43,4 +43,9 @@ public class TestAppConfig {
 	public ServiceManager getServiceManager(){
 		return new ServiceManagerImpl(this.getResultRepository(),this.getItemRepository(),this.getCustomTransformator());
 	}
+	
+	@Bean(name="tmpFolderPath")
+	public String getTmpFolderPath(){
+		return System.getProperty("java.io.tmpdir");
+	}
 }

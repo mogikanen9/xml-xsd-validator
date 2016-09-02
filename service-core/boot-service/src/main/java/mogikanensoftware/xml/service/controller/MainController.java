@@ -2,11 +2,12 @@ package mogikanensoftware.xml.service.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.Arrays;
-import java.util.UUID;
+import java.util.concurrent.Callable;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +28,6 @@ import mogikanensoftware.xml.service.data.entity.Result;
 import mogikanensoftware.xml.service.data.sm.ServiceManager;
 import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 
-
 @RestController
 public class MainController {
 
@@ -35,12 +35,10 @@ public class MainController {
 
 	@Autowired
 	private ValidationService validationService;
-	
+
 	@Autowired
 	private ServiceManager serviceManager;
 
-	
-	
 	@RequestMapping(value = "/defaultValidate", method = RequestMethod.POST)
 	public ValidationResult defaultValidate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate)
 			throws Exception {
@@ -52,51 +50,49 @@ public class MainController {
 	public ValidationResult validate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate,
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
 		try {
-			String folderPath = System.getProperty("java.io.tmpdir");
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("folderPath -> %s", folderPath));
-			}
+		
+			String fileName = serviceManager.generateTmpFileName(xmlFileToValidate.getOriginalFilename());
 
-			logger.info("xsdUrls->");
-			Arrays.stream(xsdUrls).forEach(logger::info);
-						
-
-			String fileName = xmlFileToValidate.getOriginalFilename() + System.currentTimeMillis()
-					+ UUID.randomUUID().toString();
-			if (logger.isDebugEnabled()) {
-				logger.debug("tmp fileName->"+fileName);
-			}
+			String tmpFolderPath = serviceManager.getTmpFolderPath();
 			
-			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(folderPath, fileName));
+			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(tmpFolderPath, fileName));
 
-			File file = new File(folderPath, fileName);
+			return perform(xsdUrls, tmpFolderPath, fileName);
 
-			URL[] xsds = new URL[xsdUrls.length];
-			for (int i = 0; i < xsdUrls.length; i++) {
-				xsds[i] = new URL(xsdUrls[i]);
-			}
-
-			ValidationResult validationResult = validationService.validate(file, xsds);
-
-			if (logger.isDebugEnabled()) {
-				logger.debug(String.format("ValidationResult -> %s", validationResult.toString()));
-			}
-
-			Long resultId = serviceManager.logValidationResults(validationResult);
-			logger.info(String.format("result saved with id  ->%d", resultId));			
-			
-			
-			logger.info("items were saved");
-			return validationResult;
-			
 		} catch (IOException | ValidationServiceException e) {
 			logger.error(e.getMessage(), e);
 			throw e;
 		}
 	}
 
+	protected ValidationResult perform(String[] xsdUrls, String folderPath, String fileName)
+			throws MalformedURLException, ValidationServiceException, ServiceManagerException {
+		
+		logger.info("xsdUrls->");
+		Arrays.stream(xsdUrls).forEach(logger::info);
+		
+		File file = new File(folderPath, fileName);
+
+		URL[] xsds = new URL[xsdUrls.length];
+		for (int i = 0; i < xsdUrls.length; i++) {
+			xsds[i] = new URL(xsdUrls[i]);
+		}
+
+		ValidationResult validationResult = validationService.validate(file, xsds);
+
+		if (logger.isDebugEnabled()) {
+			logger.debug(String.format("ValidationResult -> %s", validationResult!=null?validationResult.toString():"null"));
+		}
+
+		Long resultId = serviceManager.logValidationResults(validationResult);
+		logger.info(String.format("result saved with id  ->%d", resultId));
+
+		logger.info("items were saved");
+		return validationResult;
+	}
+
 	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
-	public Iterable<Result> listResults() throws Exception{
+	public Iterable<Result> listResults() throws Exception {
 		try {
 			return serviceManager.listResults();
 		} catch (ServiceManagerException e) {
@@ -104,14 +100,43 @@ public class MainController {
 			throw e;
 		}
 	}
-	
+
 	@RequestMapping(value = "/listItems", method = RequestMethod.GET)
-	public Iterable<Item> listItems() throws Exception{
+	public Iterable<Item> listItems() throws Exception {
 		try {
 			return serviceManager.listItems();
 		} catch (ServiceManagerException e) {
 			logger.error(e.getMessage(), e);
 			throw e;
-		}		
+		}
 	}
+
+	@RequestMapping("/defaultValidateAsync")
+	public Callable<ValidationResult> defaultValidateAsync(
+			@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate) throws Exception{
+		return  validateAsync(xmlFileToValidate,
+				new String[] { Constants.REPORT_MANAGER_XSD, Constants.REPORT_MANAGER_DT_XSD });
+	}
+
+	@RequestMapping("/validateAsync")
+	public Callable<ValidationResult> validateAsync(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate,
+			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
+		
+		try {
+			
+			String fileName = serviceManager.generateTmpFileName(xmlFileToValidate.getOriginalFilename());
+
+			String tmpFolderPath = serviceManager.getTmpFolderPath();
+			
+			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(tmpFolderPath, fileName));
+
+			return () -> perform(xsdUrls, tmpFolderPath, fileName);
+
+		} catch (IOException e) {
+			logger.error(e.getMessage(), e);
+			throw e;
+		}
+		
+	}
+
 }

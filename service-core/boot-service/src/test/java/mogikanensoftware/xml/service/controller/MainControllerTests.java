@@ -9,7 +9,6 @@ import java.util.List;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.BDDMockito;
@@ -17,12 +16,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
-
 
 import mogikanensoftware.xml.service.data.entity.Item;
 import mogikanensoftware.xml.service.data.entity.Result;
@@ -33,6 +33,8 @@ import mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 @WebMvcTest(MainController.class)
 public class MainControllerTests {
 
+	private static final String MYFILE_XML = "myfile.xml";
+
 	@Autowired
 	private MockMvc mvc;
 
@@ -41,7 +43,7 @@ public class MainControllerTests {
 
 	@MockBean
 	private ServiceManager serviceManager;
-
+	
 	private long currentTime;
 
 	protected Result createNewSimpleResult(long id) {
@@ -73,14 +75,24 @@ public class MainControllerTests {
 		BDDMockito.given(this.serviceManager.listItems())
 				.willReturn(Arrays.asList(createNewSimpleItem(createNewSimpleResult(100L), 200)));
 		BDDMockito.given(this.serviceManager.listResults()).willReturn(Arrays.asList(createNewSimpleResult(100L)));
-	}
+		
+		BDDMockito.given(serviceManager.generateTmpFileName(MYFILE_XML)).willReturn(MYFILE_XML+currentTime);
 
+		BDDMockito.given(serviceManager.getTmpFolderPath()).willReturn(System.getProperty("java.io.tmpdir"));
+	}
 
 	@Test
 	public void testDefaultValidate() throws Exception {
+
+		MockMultipartFile firstFile = new MockMultipartFile("xmlFileToValidate", MYFILE_XML, "text/plain",
+				"some xml".getBytes());
+
+		mvc.perform(MockMvcRequestBuilders.fileUpload("/defaultValidate").file(firstFile)
+				.accept(MediaType.APPLICATION_JSON)).andExpect(status().is(200));
+
 		// TODO build Multipart File post request
-		// this.mvc.perform(post("/validate").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
-		// .andExpect(content().string("Honda Civic"));
+		//this.mvc.perform(post("/validate").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
+			//	.andExpect(content().string("Honda Civic"));
 	}
 
 	@Test
@@ -96,20 +108,19 @@ public class MainControllerTests {
 		this.mvc.perform(get("/listResults").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().string(expectedResultAsString));
 	}
-	
-	@Test(expected=org.springframework.web.util.NestedServletException.class)
-	public void testListResultsException() throws Exception{
+
+	@Test(expected = org.springframework.web.util.NestedServletException.class)
+	public void testListResultsException() throws Exception {
 
 		final String errMsg = "Invalid data";
-		BDDMockito.given(this.serviceManager.listResults())
-		.willThrow(new ServiceManagerException(errMsg));
-		try{
+		BDDMockito.given(this.serviceManager.listResults()).willThrow(new ServiceManagerException(errMsg));
+		try {
 			this.mvc.perform(get("/listResults").accept(MediaType.APPLICATION_JSON)).andExpect(status().is(500));
-		}catch(Exception sme){
+		} catch (Exception sme) {
 			Assert.assertTrue(sme.getMessage().contains(errMsg));
 			Assert.assertTrue(sme.getCause() instanceof ServiceManagerException);
 			throw sme;
-		}	
+		}
 	}
 
 	@Test
@@ -119,20 +130,19 @@ public class MainControllerTests {
 		this.mvc.perform(get("/listItems").accept(MediaType.APPLICATION_JSON)).andExpect(status().isOk())
 				.andExpect(content().string(expectedItemsAsString));
 	}
-	
-	@Test(expected=org.springframework.web.util.NestedServletException.class)
-	public void testListItensException() throws Exception{
+
+	@Test(expected = org.springframework.web.util.NestedServletException.class)
+	public void testListItensException() throws Exception {
 
 		final String errMsg = "Bad data";
-		BDDMockito.given(this.serviceManager.listItems())
-		.willThrow(new ServiceManagerException(errMsg));
-		try{
+		BDDMockito.given(this.serviceManager.listItems()).willThrow(new ServiceManagerException(errMsg));
+		try {
 			this.mvc.perform(get("/listItems").accept(MediaType.APPLICATION_JSON)).andExpect(status().is(500));
-		}catch(Exception sme){
+		} catch (Exception sme) {
 			Assert.assertTrue(sme.getMessage().contains(errMsg));
 			Assert.assertTrue(sme.getCause() instanceof ServiceManagerException);
 			throw sme;
 		}
-				
+
 	}
 }
