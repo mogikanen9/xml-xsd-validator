@@ -13,6 +13,7 @@ import com.mogikanensoftware.xml.service.data.entity.Item;
 import com.mogikanensoftware.xml.service.data.entity.Result;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManager;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManagerException;
+import com.mogikanensoftware.xml.service.data.sm.ValidationParamInfo;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.Constants;
 
@@ -76,7 +77,7 @@ public class ServiceManagerImplTests {
 		String[] xsdUrls = new String[] { Constants.REPORT_MANAGER_XSD, Constants.REPORT_MANAGER_DT_XSD };
 		String folderPath = serviceManager.getTmpFolderPath();
 		String fileName = dataFileName;
-		ValidationResult rs = serviceManager.performValidation(xsdUrls, folderPath, fileName);
+		ValidationResult rs = serviceManager.performValidation(new ValidationParamInfo(xsdUrls, folderPath, fileName));
 		Assert.assertNotNull(rs);
 		Assert.assertEquals(rs.getTargetName(),dataFileName);
 	}
@@ -86,12 +87,12 @@ public class ServiceManagerImplTests {
 		String[] xsdUrls = new String[] { Constants.REPORT_MANAGER_XSD, Constants.REPORT_MANAGER_DT_XSD, "bad.xsd.url?<<" };
 		String folderPath = serviceManager.getTmpFolderPath();
 		String fileName = dataFileName;
-		serviceManager.performValidation(xsdUrls, folderPath, fileName);
+		serviceManager.performValidation(new ValidationParamInfo(xsdUrls, folderPath, fileName));
 	}
 	
 	@Test(expected=ServiceManagerException.class)
 	public void testPerformValidationBadFileName() throws ServiceManagerException{
-		serviceManager.performValidation(new String[] { "http://neskaju.nikomu/gde.xsd" }, 
-				serviceManager.getTmpFolderPath(), "fileDoesNotExists.txt");
+		serviceManager.performValidation(new ValidationParamInfo(new String[] { "http://neskaju.nikomu/gde.xsd" }, 
+				serviceManager.getTmpFolderPath(), "fileDoesNotExists.txt"));
 	}
 }

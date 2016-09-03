@@ -18,6 +18,7 @@ import com.mogikanensoftware.xml.service.data.entity.Item;
 import com.mogikanensoftware.xml.service.data.entity.Result;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManager;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManagerException;
+import com.mogikanensoftware.xml.service.data.sm.ValidationParamInfo;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.Constants;
 
@@ -42,13 +43,9 @@ public class MainController {
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
 		try {
 		
-			String fileName = serviceManager.generateTmpFileName(xmlFileToValidate.getOriginalFilename());
+			ValidationParamInfo paramInfo = prepareValidationParams(xmlFileToValidate, xsdUrls);
 
-			String tmpFolderPath = serviceManager.getTmpFolderPath();
-			
-			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(tmpFolderPath, fileName));
-
-			return serviceManager.performValidation(xsdUrls, tmpFolderPath, fileName);
+			return serviceManager.performValidation(paramInfo);
 
 		} catch (ServiceManagerException e) {
 			logger.error(e.getMessage(), e);
@@ -56,6 +53,21 @@ public class MainController {
 		}
 	}
 
+	protected ValidationParamInfo prepareValidationParams(MultipartFile xmlFileToValidate, String[] xsdUrls) throws ServiceManagerException, IOException{
+		
+		String fileName = serviceManager.generateTmpFileName(xmlFileToValidate.getOriginalFilename());
+		logger.debug(String.format("prepareValidationParams: fileName -> %s",fileName));
+		
+		String tmpFolderPath = serviceManager.getTmpFolderPath();
+		logger.debug(String.format("prepareValidationParams: tmpFolderPath -> %s",tmpFolderPath));
+		
+		Files.copy(xmlFileToValidate.getInputStream(), Paths.get(tmpFolderPath, fileName));
+		
+		return new ValidationParamInfo(xsdUrls, tmpFolderPath, fileName);
+		
+	}
+	
+	
 	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
 	public Iterable<Result> listResults() throws Exception {
 		try {
@@ -89,13 +101,9 @@ public class MainController {
 		
 		try {
 			
-			String fileName = serviceManager.generateTmpFileName(xmlFileToValidate.getOriginalFilename());
+			ValidationParamInfo paramInfo = prepareValidationParams(xmlFileToValidate, xsdUrls);
 
-			String tmpFolderPath = serviceManager.getTmpFolderPath();
-			
-			Files.copy(xmlFileToValidate.getInputStream(), Paths.get(tmpFolderPath, fileName));
-
-			return () -> serviceManager.performValidation(xsdUrls, tmpFolderPath, fileName);
+			return () -> serviceManager.performValidation(paramInfo);
 
 		} catch (IOException e) {
 			logger.error(e.getMessage(), e);

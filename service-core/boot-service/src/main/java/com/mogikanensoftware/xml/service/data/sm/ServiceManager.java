@@ -13,5 +13,5 @@ public interface ServiceManager {
 	String getTmpFolderPath() throws ServiceManagerException;
 	String generateTmpFileName(String fileName) throws ServiceManagerException;
 	
-	ValidationResult performValidation(String[] xsdUrls, String folderPath, String fileName) throws ServiceManagerException;
+	ValidationResult performValidation(ValidationParamInfo paramInfo) throws ServiceManagerException;
 }

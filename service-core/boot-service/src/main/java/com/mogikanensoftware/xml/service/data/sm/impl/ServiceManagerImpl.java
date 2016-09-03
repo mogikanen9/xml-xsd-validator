@@ -8,12 +8,11 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
-import javax.transaction.Transactional;
-
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.mogikanensoftware.xml.service.data.dao.ItemRepository;
 import com.mogikanensoftware.xml.service.data.dao.ResultRepository;
@@ -21,6 +20,7 @@ import com.mogikanensoftware.xml.service.data.entity.Item;
 import com.mogikanensoftware.xml.service.data.entity.Result;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManager;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManagerException;
+import com.mogikanensoftware.xml.service.data.sm.ValidationParamInfo;
 import com.mogikanensoftware.xml.service.data.transform.CustomTransformator;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.ValidationService;
@@ -65,13 +65,13 @@ public class ServiceManagerImpl implements ServiceManager {
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public Iterable<Result> listResults() throws ServiceManagerException {
 		return resultRepository.findAll();
 	}
 
 	@Override
-	@Transactional
+	@Transactional(readOnly=true)
 	public Iterable<Item> listItems() throws ServiceManagerException {
 		return itemRepository.findAll();
 	}
@@ -91,17 +91,18 @@ public class ServiceManagerImpl implements ServiceManager {
 	}
 
 	@Override
-	public ValidationResult performValidation(String[] xsdUrls, String folderPath, String fileName)
+	@Transactional
+	public ValidationResult performValidation(ValidationParamInfo paramInfo)
 			throws ServiceManagerException {
 		try {
 			logger.info("xsdUrls->");
-			Arrays.stream(xsdUrls).forEach(logger::info);
+			Arrays.stream(paramInfo.getXsdUrls()).forEach(logger::info);
 
-			File file = new File(folderPath, fileName);
+			File file = new File(paramInfo.getFolderPath(), paramInfo.getFileName());
 
-			URL[] xsds = new URL[xsdUrls.length];
-			for (int i = 0; i < xsdUrls.length; i++) {
-				xsds[i] = new URL(xsdUrls[i]);
+			URL[] xsds = new URL[paramInfo.getXsdUrls().length];
+			for (int i = 0; i < paramInfo.getXsdUrls().length; i++) {
+				xsds[i] = new URL(paramInfo.getXsdUrls()[i]);
 			}
 
 			ValidationResult validationResult = validationService.validate(file, xsds);
