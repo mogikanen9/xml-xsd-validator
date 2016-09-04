@@ -113,59 +113,5 @@ public class Item implements Serializable {
 				+ ", targetName=" + targetName + ", message=" + message + "]";
 	}
 
-	@Override
-	public int hashCode() {
-		final int prime = 31;
-		int result = 1;
-		result = prime * result + ((dateTime == null) ? 0 : dateTime.hashCode());
-		result = prime * result + ((id == null) ? 0 : id.hashCode());
-		result = prime * result + ((itemType == null) ? 0 : itemType.hashCode());
-		result = prime * result + ((message == null) ? 0 : message.hashCode());
-		result = prime * result + ((targetName == null) ? 0 : targetName.hashCode());
-		result = prime * result + ((targetType == null) ? 0 : targetType.hashCode());
-		return result;
-	}
-
-	@Override
-	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
-		Item other = (Item) obj;
-		if (dateTime == null) {
-			if (other.dateTime != null)
-				return false;
-		} else if (!dateTime.equals(other.dateTime))
-			return false;
-		if (id == null) {
-			if (other.id != null)
-				return false;
-		} else if (!id.equals(other.id))
-			return false;
-		if (itemType == null) {
-			if (other.itemType != null)
-				return false;
-		} else if (!itemType.equals(other.itemType))
-			return false;
-		if (message == null) {
-			if (other.message != null)
-				return false;
-		} else if (!message.equals(other.message))
-			return false;
-		if (targetName == null) {
-			if (other.targetName != null)
-				return false;
-		} else if (!targetName.equals(other.targetName))
-			return false;
-		if (targetType == null) {
-			if (other.targetType != null)
-				return false;
-		} else if (!targetType.equals(other.targetType))
-			return false;
-		return true;
-	}
 
 }

@@ -41,16 +41,10 @@ public class MainController {
 	@RequestMapping(value = "/validate", method = RequestMethod.POST)
 	public ValidationResult validate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate,
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
-		try {
-		
+	
 			ValidationParamInfo paramInfo = prepareValidationParams(xmlFileToValidate, xsdUrls);
 
 			return serviceManager.performValidation(paramInfo);
-
-		} catch (ServiceManagerException e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		}
 	}
 
 	protected ValidationParamInfo prepareValidationParams(MultipartFile xmlFileToValidate, String[] xsdUrls) throws ServiceManagerException, IOException{
@@ -70,22 +64,16 @@ public class MainController {
 	
 	@RequestMapping(value = "/listResults", method = RequestMethod.GET)
 	public Iterable<Result> listResults() throws Exception {
-		try {
+		
 			return serviceManager.listResults();
-		} catch (ServiceManagerException e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		}
+
 	}
 
 	@RequestMapping(value = "/listItems", method = RequestMethod.GET)
 	public Iterable<Item> listItems() throws Exception {
-		try {
+	
 			return serviceManager.listItems();
-		} catch (ServiceManagerException e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		}
+	
 	}
 
 	@RequestMapping("/defaultValidateAsync")
@@ -98,17 +86,10 @@ public class MainController {
 	@RequestMapping("/validateAsync")
 	public Callable<ValidationResult> validateAsync(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate,
 			@RequestParam(name = "xsdUrls[]") String[] xsdUrls) throws Exception {
-		
-		try {
-			
+	
 			ValidationParamInfo paramInfo = prepareValidationParams(xmlFileToValidate, xsdUrls);
 
 			return () -> serviceManager.performValidation(paramInfo);
-
-		} catch (IOException e) {
-			logger.error(e.getMessage(), e);
-			throw e;
-		}
 		
 	}
 
