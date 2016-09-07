@@ -11,13 +11,16 @@ public class ValidationResult extends AbstractBean {
 	private Set<ValidationInfoBean> validationErrors;
 	private Set<ValidationInfoBean> validationWarnings;
 
-	public ValidationResult(String targetName){
+	public ValidationResult() {
+		super();
+	}
+
+	public ValidationResult(String targetName) {
 		validationErrors = new HashSet<>();
 		validationWarnings = new HashSet<>();
 		this.targetName = targetName;
 	}
-		
-	
+
 	public ValidationResult(String targetName, Set<ValidationInfoBean> validationErrors,
 			Set<ValidationInfoBean> validationWarnings) {
 		super();
@@ -26,8 +29,6 @@ public class ValidationResult extends AbstractBean {
 		this.validationWarnings = validationWarnings;
 	}
 
-
-
 	public String getTargetName() {
 		return targetName;
 	}
@@ -35,7 +36,7 @@ public class ValidationResult extends AbstractBean {
 	public void setTargetName(String targetName) {
 		this.targetName = targetName;
 	}
-	
+
 	public Set<ValidationInfoBean> getValidationWarnings() {
 		return validationWarnings;
 	}
@@ -52,7 +53,7 @@ public class ValidationResult extends AbstractBean {
 		this.validationErrors = validationErrors;
 	}
 
-	public void addErrorInfo(ValidationInfoBean errorInfo) {		
+	public void addErrorInfo(ValidationInfoBean errorInfo) {
 		validationErrors.add(errorInfo);
 	}
 
