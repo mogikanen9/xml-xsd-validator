@@ -123,4 +123,9 @@ public class ServiceManagerImpl implements ServiceManager {
 		}
 	}
 
+	@Override
+	public Iterable<Item> listItems(Long resultId) throws ServiceManagerException {
+		return itemRepository.findByResultId(resultId);
+	}
+
 }
