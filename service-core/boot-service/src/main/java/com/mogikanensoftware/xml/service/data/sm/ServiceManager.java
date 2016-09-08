@@ -10,6 +10,7 @@ public interface ServiceManager {
 	Iterable<Result> listResults() throws ServiceManagerException; 
 	Iterable<Item> listItems() throws ServiceManagerException;
 	Iterable<Item> listItems(Long resultId) throws ServiceManagerException;
+	Iterable<Item> listItems(String fileName) throws ServiceManagerException;
 	
 	String getTmpFolderPath() throws ServiceManagerException;
 	String generateTmpFileName(String fileName) throws ServiceManagerException;

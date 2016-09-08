@@ -1,39 +1,39 @@
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml"
-      xmlns:th="http://www.thymeleaf.org">
+	xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>XML Validator Service: Simple UI</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>XML Validator Service: Simple UI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
 <body>
-    <body>
+<body>
 
-    <h1>XML Validation result items</h1>
-  
-    <table>
-      <tr>
-        <th>Id</th>
-        <th>Date and time</th>
-        <th>Item type</th>
-         <th>Target type</th>
-         <th>Item name</th>
-         <th>Message</th>
-      </tr>
-      <tr th:each="item : ${items}">
-        <td th:text="${item.id}"></td>
-        <td th:text="${item.dateTime}"></td>
-        <td th:text="${item.itemType}"></td>
-        <td th:text="${item.targetType}"></td>
-        <td th:text="${item.targetName}"></td>
-        <td th:text="${item.message}"></td>
-      </tr>
-    </table>
-  
-  <p>
-      <a href="results.html" th:href="@{/results}">Return to results</a>
-    </p>
+	<h1>XML Validation result items</h1>
 
-  </body>
+	<table>
+		<tr>
+			<th>Id</th>
+			<th>Date and time</th>
+			<th>Item type</th>
+			<th>Target type</th>
+			<th>Item name</th>
+			<th>Message</th>
+		</tr>
+		<tr th:each="item : ${items}">
+			<td th:text="${item.id}"></td>
+			<td th:text="${item.dateTime}"></td>
+			<td th:text="${item.itemType}"></td>
+			<td th:text="${item.targetType}"></td>
+			<td th:text="${item.targetName}"></td>
+			<td th:text="${item.message}"></td>
+		</tr>
+	</table>
+
+	<p>
+		<a href="results.html" th:href="@{/results}">Return to results</a>
+	</p>
+
+</body>
 </body>
 </html>

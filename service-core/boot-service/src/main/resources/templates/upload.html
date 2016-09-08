@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>XML Validator Service: Simple UI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+</head>
+<body>
+<body>	
+
+	<h1>Validate XML file</h1>
+
+	<div>
+		<form method="POST" enctype="multipart/form-data" action="/uploadFile2Validate.html">
+			<table>
+				<tr>
+					<td>XML File to upload:</td>
+					<td><input type="file" name="xmlFileToValidate" /></td>
+				</tr>
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Validate" /></td>
+				</tr>
+			</table>
+		</form>
+	</div>
+
+	<p th:if="${validatedTargetName}">
+		File was successfully validated.
+		<a href="items.html"
+				th:href="@{/items/fileName/{fileName}/(fileName=${validatedTargetName})}">View</a>
+	</p>
+
+	<p>
+		<a href="results.html" th:href="@{/results}">View all results</a>
+	</p>
+
+
+</body>
+</body>
+</html>

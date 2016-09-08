@@ -11,4 +11,5 @@ import com.mogikanensoftware.xml.service.data.entity.Item;
 public interface ItemRepository extends CrudRepository<Item,Long>{
 
 	List<Item> findByResultId(Long resultId);
+	List<Item> findByResultFileName(String fileName);
 }
