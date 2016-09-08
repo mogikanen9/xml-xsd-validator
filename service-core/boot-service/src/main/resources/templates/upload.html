@@ -5,38 +5,51 @@
 <head>
 <title>XML Validator Service: Simple UI</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+
+<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"
+	th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
 </head>
 <body>
-<body>	
+	<div class="container">
 
-	<h1>Validate XML file</h1>
+		<div class="page-header">
+			<h1>Validate XML file</h1>
+		</div>
+		<div>
+			<form method="POST" enctype="multipart/form-data"
+				action="/uploadFile2Validate.html">
+				<div class="row">
+					<div class="col-lg-6">
+						<table class="table">
+							<tr>
+								<td>XML File to upload:</td>
+								<td><input type="file" name="xmlFileToValidate" /></td>
+							</tr>
+							<tr>
+								<td></td>
+								<td><input type="submit" value="Validate" /></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</form>
+		</div>
 
-	<div>
-		<form method="POST" enctype="multipart/form-data" action="/uploadFile2Validate.html">
-			<table>
-				<tr>
-					<td>XML File to upload:</td>
-					<td><input type="file" name="xmlFileToValidate" /></td>
-				</tr>
-				<tr>
-					<td></td>
-					<td><input type="submit" value="Validate" /></td>
-				</tr>
-			</table>
-		</form>
-	</div>
-
-	<p th:if="${validatedTargetName}">
-		File was successfully validated.
-		<a href="items.html"
+		<div th:if="${validatedTargetName}" class="alert alert-success"
+			role="alert">
+			File was successfully validated. <a href="items.html"
 				th:href="@{/items/fileName/{fileName}/(fileName=${validatedTargetName})}">View</a>
-	</p>
-
-	<p>
-		<a href="results.html" th:href="@{/results}">View all results</a>
-	</p>
+		</div>
 
 
-</body>
+		<p>
+			<a href="results.html" th:href="@{/results}">View all results</a>
+		</p>
+
+	</div>
 </body>
 </html>

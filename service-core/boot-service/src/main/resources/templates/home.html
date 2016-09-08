@@ -5,18 +5,31 @@
 <head>
 <title>XML Validator Service: Simple UI</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+
+<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"
+	th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
+
 </head>
 <body>
-<body>
-
-	<p>
-		<a href="upload.html" th:href="@{/upload}">Manual validation</a>
-	</p>
-	<p>
-		<a href="results.html" th:href="@{/results}">View all results</a>
-	</p>
-
-
-</body>
+	<div class="container">
+		<div class="page-header">
+			<h1>XML Validator Service</h1>
+		</div>
+		<div class="row">
+			<div class="col-sm-4">
+				<ul class="list-group">
+					<li class="list-group-item"><a href="upload.html"
+						th:href="@{/upload}">Manual validation</a></li>
+					<li class="list-group-item"><a href="results.html"
+						th:href="@{/results}">View all results</a></li>
+				</ul>
+			</div>
+		</div>
+	</div>
 </body>
 </html>
