@@ -3,12 +3,16 @@ package com.mogikanensoftware.xml.service.controller;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.StringUtils;
 import org.springframework.web.multipart.MultipartFile;
 
+import com.mogikanensoftware.xml.service.controller.form.ValidationParamForm;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManager;
 import com.mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 import com.mogikanensoftware.xml.service.data.sm.ValidationParamInfo;
@@ -33,5 +37,19 @@ public abstract class AbstractController {
 
 		return new ValidationParamInfo(xsdUrls, tmpFolderPath, fileName);
 
+	}
+	
+	protected String[] processvalidationParamForm(ValidationParamForm validationParamForm) {
+		List<String> xsdUrls = new ArrayList<>();
+
+		if (!StringUtils.isEmpty(validationParamForm.getXsdUrl1())) {
+			xsdUrls.add(validationParamForm.getXsdUrl1());
+		}
+
+		if (!StringUtils.isEmpty(validationParamForm.getXsdUrl2())) {
+			xsdUrls.add(validationParamForm.getXsdUrl2());
+		}
+
+		return xsdUrls.toArray(new String[xsdUrls.size()]);
 	}
 }
