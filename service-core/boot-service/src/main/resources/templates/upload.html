@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>XML Validator Service: Simple UI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+
+<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"
+	th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#btnValidateSubmit').hide();
+
+		$('#xmlFileToValidate').on("change", function() {
+			$('#btnValidateSubmit').show();
+		});
+	});
+</script>
+</head>
+<body>
+	<div class="container">
+
+		<div class="page-header">
+			<h1>Validate XML file</h1>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">XSD files to validate against</h3>
+			</div>
+			<div class="panel-body">
+				<form method="POST" th:object="${validationParamForm}"
+					action="/upload.html">
+
+					<div class="form-group">
+						<label>XSD Url 1:</label> <input type="text" th:field="*{xsdUrl1}"
+							size="155" maxlength="255" />
+						<div th:if="${#fields.hasErrors('xsdUrl1')}"
+							th:errors="*{xsdUrl1}" class="alert alert-danger">XSD Url 1
+							Error</div>
+					</div>
+
+					<div class="form-group">
+						<label>XSD Url 2:</label> <input type="text" th:field="*{xsdUrl2}"
+							size="155" maxlength="255" />
+					</div>
+
+					<div class="form-group">
+						<label></label> <input class="btn btn-default" type="submit"
+							value="Set XSDs" />
+					</div>
+
+				</form>
+
+				<div th:if="${xsdsWereUpdated}" class="alert alert-success"
+					role="alert">New XSDs were successfully set</div>
+			</div>
+		</div>
+
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h3 class="panel-title">XML File to upload</h3>
+			</div>
+			<div class="panel-body">
+				<form method="POST" enctype="multipart/form-data"
+					action="/uploadFile2Validate.html">
+
+					<div class="form-group">
+						<input type="file" name="xmlFileToValidate" id="xmlFileToValidate" />
+					</div>
+
+					<div class="form-group">
+						<label></label> <input class="btn btn-default" type="submit"
+							value="Validate" id="btnValidateSubmit" />
+					</div>
+
+				</form>
+
+				<div th:if="${validatedTargetName}" class="alert alert-success"
+					role="alert">
+					File was successfully validated. <a href="items.html"
+						th:href="@{/items/fileName/{fileName}/(fileName=${validatedTargetName})}">View</a>
+				</div>
+			</div>
+		</div>
+
+		<p>
+			<a href="results.html" th:href="@{/results}">View all results</a>
+		</p>
+
+	</div>
+</body>
+</html>

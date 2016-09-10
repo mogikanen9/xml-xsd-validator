@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:th="http://www.thymeleaf.org">
+<head>
+<title>XML Validator Service: Simple UI</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<link
+	href="http://cdn.jsdelivr.net/webjars/bootstrap/3.3.7/css/bootstrap.min.css"
+	th:href="@{/webjars/bootstrap/3.3.7/css/bootstrap.min.css}"
+	rel="stylesheet" media="screen" />
+
+<script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"
+	th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
+</head>
+<body>
+	<div class="container">
+		<div class="page-header">
+			<h1>XML Validation result items</h1>
+		</div>
+				<table class="table table-condensed">
+					<tr>
+						<th>Id</th>
+						<th>Date and time</th>
+						<th>Item type</th>
+						<th>Target type</th>
+						<th>Item name</th>
+						<th>Message</th>
+					</tr>
+					<tr th:each="item : ${items}">
+						<td th:text="${item.id}"></td>
+						<td th:text="${item.dateTime}"></td>
+						<td th:text="${item.itemType}"></td>
+						<td th:text="${item.targetType}"></td>
+						<td th:text="${item.targetName}"></td>
+						<td th:text="${item.message}"></td>
+					</tr>
+				</table>
+
+		<p>
+			<a href="results.html" th:href="@{/results}">Return to results</a>
+		</p>
+	</div>
+</body>
+</html>

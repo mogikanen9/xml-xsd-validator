@@ -123,4 +123,16 @@ public class ServiceManagerImpl implements ServiceManager {
 		}
 	}
 
+	@Override
+	@Transactional(readOnly=true)
+	public Iterable<Item> listItems(Long resultId) throws ServiceManagerException {
+		return itemRepository.findByResultId(resultId);
+	}
+
+	@Override
+	@Transactional(readOnly=true)
+	public Iterable<Item> listItems(String fileName) throws ServiceManagerException {
+		return itemRepository.findByResultFileName(fileName);
+	}
+
 }
