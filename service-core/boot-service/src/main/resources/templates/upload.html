@@ -12,6 +12,15 @@
 
 <script src="http://cdn.jsdelivr.net/webjars/jquery/2.2.4/jquery.min.js"
 	th:src="@{/webjars/jquery/2.2.4/jquery.min.js}"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#btnValidateSubmit').hide();
+
+		$('#xmlFileToValidate').on("change", function() {
+			$('#btnValidateSubmit').show();
+		});
+	});
+</script>
 </head>
 <body>
 	<div class="container">
@@ -29,16 +38,16 @@
 					action="/upload.html">
 
 					<div class="form-group">
-						<label>XSD Url 1:</label> 
-						<input type="text" th:field="*{xsdUrl1}"
-							size="155" maxlength="255"/>
-						<div th:if="${#fields.hasErrors('xsdUrl1')}" th:errors="*{xsdUrl1}" class="alert alert-danger">XSD Url 1 Error</div>
+						<label>XSD Url 1:</label> <input type="text" th:field="*{xsdUrl1}"
+							size="155" maxlength="255" />
+						<div th:if="${#fields.hasErrors('xsdUrl1')}"
+							th:errors="*{xsdUrl1}" class="alert alert-danger">XSD Url 1
+							Error</div>
 					</div>
 
 					<div class="form-group">
-						<label>XSD Url 2:</label> 
-						<input type="text" th:field="*{xsdUrl2}"
-							size="155" maxlength="255"/>
+						<label>XSD Url 2:</label> <input type="text" th:field="*{xsdUrl2}"
+							size="155" maxlength="255" />
 					</div>
 
 					<div class="form-group">
@@ -62,12 +71,12 @@
 					action="/uploadFile2Validate.html">
 
 					<div class="form-group">
-						<input type="file" name="xmlFileToValidate" />
+						<input type="file" name="xmlFileToValidate" id="xmlFileToValidate" />
 					</div>
 
 					<div class="form-group">
 						<label></label> <input class="btn btn-default" type="submit"
-							value="Validate" />
+							value="Validate" id="btnValidateSubmit" />
 					</div>
 
 				</form>
