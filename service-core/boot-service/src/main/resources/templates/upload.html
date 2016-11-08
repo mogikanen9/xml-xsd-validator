@@ -35,7 +35,7 @@
 			</div>
 			<div class="panel-body">
 				<form method="POST" th:object="${validationParamForm}"
-					action="/upload.html">
+					action="#" th:action="@{/upload}">
 
 					<div class="form-group">
 						<label>XSD Url 1:</label> <input type="text" th:field="*{xsdUrl1}"
@@ -68,7 +68,7 @@
 			</div>
 			<div class="panel-body">
 				<form method="POST" enctype="multipart/form-data"
-					action="/uploadFile2Validate.html">
+					action="#" th:action="@{/uploadFile2Validate}">
 
 					<div class="form-group">
 						<input type="file" name="xmlFileToValidate" id="xmlFileToValidate" />
