@@ -3,3 +3,5 @@
 *.prefs
 service-core/boot-service/.settings/org.eclipse.wst.common.project.facet.core.xml
 /.settings/
+/target/
+**/target/**

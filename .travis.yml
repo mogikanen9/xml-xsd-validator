@@ -1,3 +1,12 @@
+dist: trusty
 language: java
+
+addons:
+  sonarcloud:
+    organization: "mogikanen9-github"
+    
 jdk:
-  - oraclejdk8
+- oraclejdk8
+
+script:
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.login=${SONAR_TOKEN}    
