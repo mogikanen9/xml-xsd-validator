@@ -1,23 +1,6 @@
 package com.mogikanensoftware.xml.service.controller;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import javax.validation.Valid;
-
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.StringUtils;
-import org.springframework.validation.BindingResult;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.SessionAttributes;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.mogikanensoftware.xml.service.controller.form.ValidationParamForm;
 import com.mogikanensoftware.xml.service.data.entity.Item;
@@ -26,6 +9,20 @@ import com.mogikanensoftware.xml.service.data.sm.ServiceManagerException;
 import com.mogikanensoftware.xml.service.data.sm.ValidationParamInfo;
 import com.mogikanensoftware.xml.utils.core.bean.ValidationResult;
 import com.mogikanensoftware.xml.utils.core.service.Constants;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
+import org.springframework.web.bind.support.SessionStatus;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @SessionAttributes("validationParamForm")
 @Controller
@@ -61,7 +58,7 @@ public class UIController extends AbstractController {
 
 		model.addAttribute("items", items);
 		return "items";
-	}	
+	}
 
 	@PostMapping("/uploadFile2Validate")
 	public String uploadFile2Validate(@RequestParam("xmlFileToValidate") MultipartFile xmlFileToValidate,
@@ -91,14 +88,19 @@ public class UIController extends AbstractController {
 	}
 
 	@PostMapping("/upload")
-	public String validateFilePost(@Valid ValidationParamForm validationParamForm, 
-			BindingResult bindingResult, Model model) throws Exception {
+	public String validateFilePost(@Valid ValidationParamForm validationParamForm, BindingResult bindingResult,
+			Model model) throws Exception {
 
 		if (!bindingResult.hasErrors()) {
 			model.addAttribute("xsdsWereUpdated", Boolean.TRUE);
-        }
-		
+		}
 
 		return "upload";
 	}
+
+	@RequestMapping("/flush")
+  	public String goodbye(SessionStatus status) {
+		status.setComplete();
+		return "home";
+  	}
 }
